@@ -17,6 +17,8 @@ public class Grid extends JPanel implements MouseListener {
     private Cell startCell;
     private Cell goalCell;
 
+    private AlgorithmThread algorithmThread;
+
     public Grid(int height, int width, int numRows, int numCols){
         this.width = width;
         this.height = height;
@@ -25,6 +27,7 @@ public class Grid extends JPanel implements MouseListener {
 
         this.cellHeight = height / numRows;
         this.cellWidth = width / numCols;
+
 
         buildGrid();
         addMouseListener(this);
@@ -98,7 +101,14 @@ public class Grid extends JPanel implements MouseListener {
         this.repaint();
     }
 
+    public void start(){
+        this.algorithmThread.setCleared(false);
+        this.algorithmThread.start();
+    }
+
     public void clear(){
+        this.algorithmThread.clear();
+        this.algorithmThread = new AlgorithmThread(this);
         buildGrid();
         this.repaint();
     }
@@ -132,25 +142,29 @@ public class Grid extends JPanel implements MouseListener {
         this.goalCell = goalCell;
     }
 
+    public AlgorithmThread getAlgorithmThread() {
+        return algorithmThread;
+    }
+
+    public void setAlgorithmThread(AlgorithmThread algorithmThread) {
+        this.algorithmThread = algorithmThread;
+    }
+
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent mouseEvent) {
 
-        Point mousePos = new Point(e.getX(), e.getY());
+        Point curMousePosition = new Point(mouseEvent.getX(), mouseEvent.getY());
 
-        if (startCell != null){
+        if(mouseEvent.getButton() == MouseEvent.BUTTON1){
             startCell.setColor(AlgorithmThread.REG_CELL_COLOR);
-
+            startCell = grid[curMousePosition.x/cellWidth][curMousePosition.y/cellHeight];
+            startCell.setColor(AlgorithmThread.START_COLOR);
         }
-        startCell = grid[(int) (mousePos.x / cellWidth)][(int) (mousePos.y / cellHeight)];
-        startCell.setColor(AlgorithmThread.START_COLOR);
-
-
-        if (goalCell != null){
+        if(mouseEvent.getButton() == MouseEvent.BUTTON3){
             goalCell.setColor(AlgorithmThread.REG_CELL_COLOR);
-
+            goalCell = grid[curMousePosition.x/cellWidth][curMousePosition.y/cellHeight];
+            goalCell.setColor(AlgorithmThread.GOAL_COLOR);
         }
-        goalCell = grid[(int) (mousePos.x / cellWidth)][(int) (mousePos.y / cellHeight)];
-        goalCell.setColor(AlgorithmThread.GOAL_COLOR);
 
         update();
     }

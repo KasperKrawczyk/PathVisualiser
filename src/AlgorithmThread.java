@@ -10,9 +10,9 @@ public class AlgorithmThread extends Thread {
     //cells we need to look at
     private PriorityQueue<Cell> priorityQueue;
     private Grid grid;
-    boolean isStartChosen = false;
-    boolean isEndChosen = false;
-    boolean isPaused = false;
+    boolean isStartChosen = true;
+    boolean isEndChosen = true;
+    boolean isCleared = true;
     public static Color REG_CELL_COLOR = new Color(218, 200, 140);
     public static Color START_COLOR = new Color(40, 45, 148);
     public static Color GOAL_COLOR = Color.RED;
@@ -27,10 +27,12 @@ public class AlgorithmThread extends Thread {
 
     public void run(){
         do{
+            System.out.println("he?");
             if(canComputeAlgorithm()){
+                System.out.println("RUNNING");
                 findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 0);
             }
-        }while(true);
+        }while(!isCleared);
     }
 
     public void findPath(Cell startCell, Cell goalCell, int algorithm){
@@ -96,11 +98,40 @@ public class AlgorithmThread extends Thread {
     }
 
     private boolean canComputeAlgorithm(){
-        return isStartChosen && isEndChosen && !isPaused;
+        return isStartChosen && isEndChosen && !isCleared;
     }
+
+    public void clear(){
+        this.isCleared = true;
+    }
+
 
     private double getManhattanDistance(Point source, Point destination){
         return Math.abs(source.x - destination.x) + Math.abs(source.y - destination.y);
     }
 
+    public boolean isStartChosen() {
+        return isStartChosen;
+    }
+
+    public void setStartChosen(boolean startChosen) {
+        isStartChosen = startChosen;
+    }
+
+    public boolean isEndChosen() {
+        return isEndChosen;
+    }
+
+    public void setEndChosen(boolean endChosen) {
+        isEndChosen = endChosen;
+    }
+
+    public boolean isCleared() {
+        return isCleared;
+    }
+
+    public void setCleared(boolean isCleared) {
+        System.out.println("am I cleared? " + isCleared);
+        this.isCleared = isCleared;
+    }
 }
