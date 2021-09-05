@@ -48,11 +48,11 @@ public class AlgorithmThread extends Thread {
         priorityQueue.add(startCell);
 
         while(!priorityQueue.isEmpty() && isComputing){
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             this.grid.update();
 
             Cell curCell = priorityQueue.poll();
@@ -111,11 +111,11 @@ public class AlgorithmThread extends Thread {
             if(cell == goalCell) System.out.println("goalCell = " + cell);
 
 
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if(cell != startCell && cell != goalCell){
                 System.out.println("animating the path " + cell);
                 cell.setColor(PATH_COLOR);
