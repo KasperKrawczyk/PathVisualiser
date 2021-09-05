@@ -2,31 +2,34 @@ import java.awt.*;
 import java.util.*;
 
 public class AlgorithmThread extends Thread {
+
     public static final int DIJKSTRA = 0;
     public static final int A_STAR = 1;
-    //cells we have already looked at
+
     private Set<Cell> visitedCellsSet;
-    //cells we need to look at
     private PriorityQueue<Cell> priorityQueue;
     private Grid grid;
+
     Cell startCell;
     Cell goalCell;
+
     boolean isStartChosen = true;
     boolean isEndChosen = true;
     boolean isThreadStopped = true;
     boolean isComputing = true;
 
     public AlgorithmThread(Grid grid){
+        this.visitedCellsSet = new HashSet<>();
+        this.priorityQueue = new PriorityQueue<>();
         this.grid = grid;
         this.startCell = grid.getStartCell();
         this.goalCell = grid.getGoalCell();
-        this.visitedCellsSet = new HashSet<>();
-        this.priorityQueue = new PriorityQueue<>();
+
     }
 
     public void run(){
         do{
-            findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 1);
+            findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 0);
         }while(!isThreadStopped());
     }
 
@@ -66,15 +69,12 @@ public class AlgorithmThread extends Thread {
             }
 
             for(Edge edge : curCell.getEdges()){
-                Cell neighbourCell = edge.getDestination();
-                if(neighbourCell.getCellType() == CellType.WALL){
-                    continue;
-                }
+
                 if(algorithm == DIJKSTRA){
-                    this.processNeighbourDijkstra(curCell, neighbourCell, edge);
+                    this.processNeighbourDijkstra(curCell, edge);
 
                 } else if(algorithm == A_STAR){
-                    this.processNeighbourAStar(curCell, neighbourCell, edge);
+                    this.processNeighbourAStar(curCell, edge);
 
                 }
 
@@ -124,7 +124,11 @@ public class AlgorithmThread extends Thread {
         return Math.abs(source.x - destination.x) + Math.abs(source.y - destination.y);
     }
 
-    private void processNeighbourDijkstra(Cell curCell, Cell neighbourCell, Edge edge){
+    private void processNeighbourDijkstra(Cell curCell, Edge edge){
+        Cell neighbourCell = edge.getDestination();
+        if(neighbourCell.getCellType() == CellType.WALL){
+            return;
+        }
         double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
 
         if(neighbourCell.getCellType() != CellType.EXPLORED
@@ -142,7 +146,11 @@ public class AlgorithmThread extends Thread {
         }
     }
 
-    private void processNeighbourAStar(Cell curCell, Cell neighbourCell, Edge edge){
+    private void processNeighbourAStar(Cell curCell, Edge edge){
+        Cell neighbourCell = edge.getDestination();
+        if(neighbourCell.getCellType() == CellType.WALL){
+            return;
+        }
         if(visitedCellsSet.contains(neighbourCell)){
             return;
         }
