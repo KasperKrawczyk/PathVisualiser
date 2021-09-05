@@ -3,21 +3,23 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Cell implements Comparable<Cell> {
-    int width;
-    int height;
-    Color color;
-    Point position;
-    double distanceFromStart;
-    double cost;
-    Cell prev;
-    ArrayList<Edge> edges;
-    boolean isStart;
-    boolean isGoal;
+    private int width;
+    private int height;
+    private CellType cellType;
+    private Color color;
+    private Point position;
+    private double distanceFromStart;
+    private double cost;
+    private Cell prev;
+    private ArrayList<Edge> edges;
+
+
 
     public Cell(Point position, int width, int height) {
         this.width = width;
         this.height = height;
-        this.color = AlgorithmThread.REG_CELL_COLOR;
+        cellType = CellType.REGULAR;
+        this.color = cellType.color;
         this.position = position;
         this.distanceFromStart = Double.POSITIVE_INFINITY;
         this.edges = new ArrayList<>();
@@ -59,6 +61,15 @@ public class Cell implements Comparable<Cell> {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public CellType getCellType() {
+        return cellType;
+    }
+
+    public void setCellType(CellType cellType) {
+        this.cellType = cellType;
+        this.color = cellType.color;
     }
 
     public Color getColor() {

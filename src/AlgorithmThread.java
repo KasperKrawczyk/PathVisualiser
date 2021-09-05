@@ -16,13 +16,7 @@ public class AlgorithmThread extends Thread {
     boolean isEndChosen = true;
     boolean isThreadStopped = true;
     boolean isComputing = true;
-    public static Color REG_CELL_COLOR = new Color(218, 200, 140);
-    public static Color START_COLOR = new Color(40, 45, 148);
-    public static Color GOAL_COLOR = new Color(232, 57, 41);
-    public static Color EXPLORED_COLOR = new Color(60, 134, 83);
-    public static Color TO_EXPLORE_COLOR = new Color(86, 229, 109);
-    public static Color PATH_COLOR = new Color(250, 100, 36);
-    public static Color WALL_COLOR = new Color(16, 15, 15);
+
 
     public AlgorithmThread(Grid grid){
         this.grid = grid;
@@ -56,16 +50,16 @@ public class AlgorithmThread extends Thread {
 
             Cell curCell = priorityQueue.poll();
 
-            if(curCell.getColor() == WALL_COLOR){
+            if(curCell.getCellType() == CellType.WALL){
                 continue;
             }
-            curCell.setColor(EXPLORED_COLOR);
+            curCell.setCellType(CellType.EXPLORED);
 
             if(curCell == startCell){
-                startCell.setColor(START_COLOR);
+                startCell.setCellType(CellType.START);
             }
             if(curCell == goalCell){
-                goalCell.setColor(GOAL_COLOR);
+                goalCell.setCellType(CellType.GOAL);
                 this.grid.update();
                 System.out.println("breaking!");
                 break;
@@ -74,16 +68,16 @@ public class AlgorithmThread extends Thread {
             for(Edge edge : curCell.getEdges()){
                 if(algorithm == DIJKSTRA){
                     Cell neighbourCell = edge.getDestination();
-                    if(neighbourCell.getColor() == WALL_COLOR){
+                    if(neighbourCell.getCellType() == CellType.WALL){
                         continue;
                     }
 
                     double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
 
-                    if(neighbourCell.getColor() != EXPLORED_COLOR
-                            && neighbourCell.getColor() != START_COLOR
-                            && neighbourCell.getColor() != GOAL_COLOR){
-                        neighbourCell.setColor(TO_EXPLORE_COLOR);
+                    if(neighbourCell.getCellType() != CellType.EXPLORED
+                            && neighbourCell.getCellType() != CellType.START
+                            && neighbourCell.getCellType() != CellType.GOAL){
+                        neighbourCell.setCellType(CellType.TO_EXPLORE);
                     }
 
                     if(distanceFromStartCell < neighbourCell.getDistanceFromStart()){
@@ -105,7 +99,7 @@ public class AlgorithmThread extends Thread {
             path.add(curCell.getPrev());
             curCell = curCell.getPrev();
             if(curCell.equals(startCell)){
-                curCell.setColor(START_COLOR);
+                curCell.setCellType(CellType.START);
             }
         }
         this.grid.update();
@@ -123,7 +117,7 @@ public class AlgorithmThread extends Thread {
             }
             if(cell != startCell && cell != goalCell){
                 System.out.println("animating the path " + cell);
-                cell.setColor(PATH_COLOR);
+                cell.setCellType(CellType.PATH);
                 this.grid.update();
             }
         }

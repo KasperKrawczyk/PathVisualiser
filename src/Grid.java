@@ -51,9 +51,9 @@ public class Grid extends JPanel implements MouseListener {
         }
 
         startCell = grid[1][1];
-        startCell.setColor(AlgorithmThread.START_COLOR);
+        startCell.setCellType(CellType.START);
         goalCell = grid[numRows - 2][numCols - 2];
-        goalCell.setColor(AlgorithmThread.GOAL_COLOR);
+        goalCell.setCellType(CellType.GOAL);
         this.update();
 
     }
@@ -160,29 +160,28 @@ public class Grid extends JPanel implements MouseListener {
 
         if (mouseEvent.isControlDown()
                 && mouseEvent.getButton() == MouseEvent.BUTTON1
-                && curCell.getColor() == AlgorithmThread.REG_CELL_COLOR) {
+                && curCell.getCellType() == CellType.REGULAR) {
 
-            curCell.setColor(AlgorithmThread.WALL_COLOR);
+            curCell.setCellType(CellType.WALL);
 
         } else if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
-            startCell.setColor(AlgorithmThread.REG_CELL_COLOR);
+            startCell.setCellType(CellType.REGULAR);
             startCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
-            curCell.setColor(AlgorithmThread.START_COLOR);
+            curCell.setCellType(CellType.START);
 
         } else if (mouseEvent.isControlDown()
                 && mouseEvent.getButton() == MouseEvent.BUTTON1
-                && curCell.getColor() == AlgorithmThread.WALL_COLOR) {
+                && curCell.getCellType() == CellType.WALL) {
 
-            curCell.setColor(AlgorithmThread.REG_CELL_COLOR);
+            curCell.setCellType(CellType.REGULAR);
 
         }
         if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
-            goalCell.setColor(AlgorithmThread.REG_CELL_COLOR);
+            goalCell.setCellType(CellType.REGULAR);
             goalCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
-            curCell.setColor(AlgorithmThread.GOAL_COLOR);
+            curCell.setCellType(CellType.GOAL);
         }
-
 
         update();
     }
