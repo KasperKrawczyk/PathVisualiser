@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -154,38 +156,55 @@ public class Grid extends JPanel implements MouseListener {
     public void mouseClicked(MouseEvent mouseEvent) {
 
         Point curMousePosition = new Point(mouseEvent.getX(), mouseEvent.getY());
+        Cell curCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
 
-        if(mouseEvent.getButton() == MouseEvent.BUTTON1){
+        if (mouseEvent.isControlDown()
+                && mouseEvent.getButton() == MouseEvent.BUTTON1
+                && curCell.getColor() == AlgorithmThread.REG_CELL_COLOR) {
+
+            curCell.setColor(AlgorithmThread.WALL_COLOR);
+
+        } else if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+
             startCell.setColor(AlgorithmThread.REG_CELL_COLOR);
-            startCell = grid[curMousePosition.x/cellWidth][curMousePosition.y/cellHeight];
-            startCell.setColor(AlgorithmThread.START_COLOR);
-        } else if(mouseEvent.getButton() == MouseEvent.BUTTON3){
-            goalCell.setColor(AlgorithmThread.REG_CELL_COLOR);
-            goalCell = grid[curMousePosition.x/cellWidth][curMousePosition.y/cellHeight];
-            goalCell.setColor(AlgorithmThread.GOAL_COLOR);
+            startCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+            curCell.setColor(AlgorithmThread.START_COLOR);
+
+        } else if (mouseEvent.isControlDown()
+                && mouseEvent.getButton() == MouseEvent.BUTTON1
+                && curCell.getColor() == AlgorithmThread.WALL_COLOR) {
+
+            curCell.setColor(AlgorithmThread.REG_CELL_COLOR);
+
         }
+        if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            goalCell.setColor(AlgorithmThread.REG_CELL_COLOR);
+            goalCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+            curCell.setColor(AlgorithmThread.GOAL_COLOR);
+        }
+
 
         update();
     }
 
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent mouseEvent) {
 
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent mouseEvent) {
 
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent mouseEvent) {
 
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent mouseEvent) {
 
     }
 }

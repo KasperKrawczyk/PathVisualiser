@@ -18,10 +18,11 @@ public class AlgorithmThread extends Thread {
     boolean isComputing = true;
     public static Color REG_CELL_COLOR = new Color(218, 200, 140);
     public static Color START_COLOR = new Color(40, 45, 148);
-    public static Color GOAL_COLOR = Color.RED;
+    public static Color GOAL_COLOR = new Color(232, 57, 41);
     public static Color EXPLORED_COLOR = new Color(60, 134, 83);
     public static Color TO_EXPLORE_COLOR = new Color(86, 229, 109);
     public static Color PATH_COLOR = new Color(250, 100, 36);
+    public static Color WALL_COLOR = new Color(16, 15, 15);
 
     public AlgorithmThread(Grid grid){
         this.grid = grid;
@@ -33,9 +34,7 @@ public class AlgorithmThread extends Thread {
 
     public void run(){
         do{
-            System.out.println("he?");
             if(canComputeAlgorithm()){
-                System.out.println("RUNNING");
                 findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 0);
             }
         }while(!isThreadStopped());
@@ -57,6 +56,9 @@ public class AlgorithmThread extends Thread {
 
             Cell curCell = priorityQueue.poll();
 
+            if(curCell.getColor() == WALL_COLOR){
+                continue;
+            }
             curCell.setColor(EXPLORED_COLOR);
 
             if(curCell == startCell){
@@ -67,17 +69,20 @@ public class AlgorithmThread extends Thread {
                 this.grid.update();
                 System.out.println("breaking!");
                 break;
-            } else {
-                curCell.setColor(EXPLORED_COLOR);
             }
 
             for(Edge edge : curCell.getEdges()){
                 if(algorithm == DIJKSTRA){
                     Cell neighbourCell = edge.getDestination();
+                    if(neighbourCell.getColor() == WALL_COLOR){
+                        continue;
+                    }
 
                     double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
 
-                    if(neighbourCell.getColor() != EXPLORED_COLOR && neighbourCell.getColor() != START_COLOR){
+                    if(neighbourCell.getColor() != EXPLORED_COLOR
+                            && neighbourCell.getColor() != START_COLOR
+                            && neighbourCell.getColor() != GOAL_COLOR){
                         neighbourCell.setColor(TO_EXPLORE_COLOR);
                     }
 
@@ -126,7 +131,7 @@ public class AlgorithmThread extends Thread {
     }
 
     private boolean canComputeAlgorithm(){
-        return isStartChosen && isEndChosen && !isThreadStopped();
+        return isStartChosen && isEndChosen && !isThreadStopped;
     }
 
     public void stopThread(){
