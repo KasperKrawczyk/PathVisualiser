@@ -1,12 +1,11 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class AlgorithmThread extends Thread {
     public static final int DIJKSTRA = 0;
+    public static final int A_STAR = 1;
     //cells we have already looked at
-    //private boolean[][] visited;
+    private Set<Cell> visitedCellsSet;
     //cells we need to look at
     private PriorityQueue<Cell> priorityQueue;
     private Grid grid;
@@ -17,38 +16,40 @@ public class AlgorithmThread extends Thread {
     boolean isThreadStopped = true;
     boolean isComputing = true;
 
-
     public AlgorithmThread(Grid grid){
         this.grid = grid;
         this.startCell = grid.getStartCell();
         this.goalCell = grid.getGoalCell();
-        //visited = new boolean[grid.getNumRows()][grid.getNumCols()];
-        priorityQueue = new PriorityQueue<>();
+        this.visitedCellsSet = new HashSet<>();
+        this.priorityQueue = new PriorityQueue<>();
     }
 
     public void run(){
         do{
-            if(canComputeAlgorithm()){
-                findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 0);
-            }
+            findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 1);
         }while(!isThreadStopped());
     }
 
     public void findPath(Cell startCell, Cell goalCell, int algorithm){
         startCell.setDistanceFromStart(0.0);
-        if(algorithm == DIJKSTRA) startCell.setCost(0.0);
+        if(algorithm == DIJKSTRA) {
+            startCell.setCost(0.0);
+        } else if (algorithm == A_STAR){
+            startCell.setCost(getManhattanDistance(startCell.getPosition(), goalCell.getPosition()));
+        }
 
         priorityQueue.add(startCell);
 
-        while(!priorityQueue.isEmpty() && isComputing){
+        while(!priorityQueue.isEmpty() && !isThreadStopped()){
             try {
-                Thread.sleep(100);
+                Thread.sleep(25);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             this.grid.update();
 
             Cell curCell = priorityQueue.poll();
+            this.visitedCellsSet.add(curCell);
 
             if(curCell.getCellType() == CellType.WALL){
                 continue;
@@ -61,32 +62,20 @@ public class AlgorithmThread extends Thread {
             if(curCell == goalCell){
                 goalCell.setCellType(CellType.GOAL);
                 this.grid.update();
-                System.out.println("breaking!");
                 break;
             }
 
             for(Edge edge : curCell.getEdges()){
+                Cell neighbourCell = edge.getDestination();
+                if(neighbourCell.getCellType() == CellType.WALL){
+                    continue;
+                }
                 if(algorithm == DIJKSTRA){
-                    Cell neighbourCell = edge.getDestination();
-                    if(neighbourCell.getCellType() == CellType.WALL){
-                        continue;
-                    }
+                    this.processNeighbourDijkstra(curCell, neighbourCell, edge);
 
-                    double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
+                } else if(algorithm == A_STAR){
+                    this.processNeighbourAStar(curCell, neighbourCell, edge);
 
-                    if(neighbourCell.getCellType() != CellType.EXPLORED
-                            && neighbourCell.getCellType() != CellType.START
-                            && neighbourCell.getCellType() != CellType.GOAL){
-                        neighbourCell.setCellType(CellType.TO_EXPLORE);
-                    }
-
-                    if(distanceFromStartCell < neighbourCell.getDistanceFromStart()){
-                        priorityQueue.remove(neighbourCell);
-                        neighbourCell.setDistanceFromStart(distanceFromStartCell);
-                        neighbourCell.setCost(distanceFromStartCell);
-                        neighbourCell.setPrev(curCell);
-                        priorityQueue.add(neighbourCell);
-                    }
                 }
 
             }
@@ -124,9 +113,6 @@ public class AlgorithmThread extends Thread {
         stopThread();
     }
 
-    private boolean canComputeAlgorithm(){
-        return isStartChosen && isEndChosen && !isThreadStopped;
-    }
 
     public void stopThread(){
         this.isComputing = false;
@@ -136,6 +122,49 @@ public class AlgorithmThread extends Thread {
 
     private double getManhattanDistance(Point source, Point destination){
         return Math.abs(source.x - destination.x) + Math.abs(source.y - destination.y);
+    }
+
+    private void processNeighbourDijkstra(Cell curCell, Cell neighbourCell, Edge edge){
+        double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
+
+        if(neighbourCell.getCellType() != CellType.EXPLORED
+                && neighbourCell.getCellType() != CellType.START
+                && neighbourCell.getCellType() != CellType.GOAL){
+            neighbourCell.setCellType(CellType.TO_EXPLORE);
+        }
+
+        if(distanceFromStartCell < neighbourCell.getDistanceFromStart()){
+            priorityQueue.remove(neighbourCell);
+            neighbourCell.setDistanceFromStart(distanceFromStartCell);
+            neighbourCell.setCost(distanceFromStartCell);
+            neighbourCell.setPrev(curCell);
+            priorityQueue.add(neighbourCell);
+        }
+    }
+
+    private void processNeighbourAStar(Cell curCell, Cell neighbourCell, Edge edge){
+        if(visitedCellsSet.contains(neighbourCell)){
+            return;
+        }
+
+        double startDist = curCell.getDistanceFromStart() + edge.getCost();
+        double goalDist = getManhattanDistance(neighbourCell.getPosition(), goalCell.getPosition());
+        double approxCost = startDist + goalDist;
+
+        if(neighbourCell.getCellType() != CellType.EXPLORED
+                && neighbourCell.getCellType() != CellType.START){
+            neighbourCell.setCellType(CellType.TO_EXPLORE);
+        }
+
+        if(!priorityQueue.contains(neighbourCell) || startDist < neighbourCell.getDistanceFromStart()){
+            neighbourCell.setDistanceFromStart(startDist);
+            neighbourCell.setCost(approxCost);
+            if(neighbourCell == startCell){
+                System.out.println("What in the fuck everlasting?");
+            }
+            neighbourCell.setPrev(curCell);
+            priorityQueue.add(neighbourCell);
+        }
     }
 
     public boolean isStartChosen() {

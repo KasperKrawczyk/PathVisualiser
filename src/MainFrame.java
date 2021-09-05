@@ -48,24 +48,22 @@ public class MainFrame extends JFrame implements ActionListener {
         algorithmList = new JComboBox(algorithms);
         algorithmListLabel = new JLabel("Search Algorithm: ");
         algorithmListLabel.setLabelFor(algorithmList);
-        algorithmListLabel.setHorizontalAlignment(JLabel.RIGHT);
+        algorithmListLabel.setHorizontalAlignment(JLabel.LEFT);
 
         buttonPanel = new JPanel(new GridLayout(2, 1, 0, 10));
         buttonPanel.add(startButton);
         buttonPanel.add(clearButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        optionPanel = new JPanel(new GridLayout(1, 2, 0, 5));
-//        optionPanel.add(stepSpinnerLabel);
-//        optionPanel.add(stepSpinner);
+        optionPanel = new JPanel(new GridLayout(1, 2, 15, 5));
         optionPanel.add(algorithmListLabel);
         optionPanel.add(algorithmList);
-        controlPanel.add(optionPanel,BorderLayout.CENTER);
+        controlPanel.add(optionPanel, BorderLayout.CENTER);
 
         controlPanel.setPreferredSize(new Dimension(400,75));
 
-        container.add(grid,BorderLayout.CENTER);
-        container.add(controlPanel,BorderLayout.SOUTH);
+        container.add(grid, BorderLayout.CENTER);
+        container.add(controlPanel, BorderLayout.NORTH);
 
         this.add(container);
         this.setResizable(false);

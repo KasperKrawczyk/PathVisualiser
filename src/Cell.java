@@ -125,7 +125,7 @@ public class Cell implements Comparable<Cell> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cell cell = (Cell) o;
-        return color.equals(cell.color) && position.equals(cell.position);
+        return cellType.equals(cell.cellType) && position.equals(cell.position);
     }
 
     @Override
