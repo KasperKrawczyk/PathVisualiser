@@ -29,7 +29,7 @@ public class AlgorithmThread extends Thread {
 
     public void run(){
         do{
-            findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 0);
+            findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 1);
         }while(!isThreadStopped());
     }
 
@@ -38,7 +38,7 @@ public class AlgorithmThread extends Thread {
         if(algorithm == DIJKSTRA) {
             startCell.setCost(0.0);
         } else if (algorithm == A_STAR){
-            startCell.setCost(getManhattanDistance(startCell.getPosition(), goalCell.getPosition()));
+            startCell.setCost(getHeuristic(startCell.getPosition(), goalCell.getPosition()));
         }
 
         priorityQueue.add(startCell);
@@ -54,9 +54,6 @@ public class AlgorithmThread extends Thread {
             Cell curCell = priorityQueue.poll();
             this.visitedCellsSet.add(curCell);
 
-            if(curCell.getCellType() == CellType.WALL){
-                continue;
-            }
             curCell.setCellType(CellType.EXPLORED);
 
             if(curCell == startCell){
@@ -74,7 +71,7 @@ public class AlgorithmThread extends Thread {
                     this.processNeighbourDijkstra(curCell, edge);
 
                 } else if(algorithm == A_STAR){
-                    this.processNeighbourAStar(curCell, edge);
+                    this.processNeighbourAStar(curCell, edge, goalCell);
 
                 }
 
@@ -85,14 +82,13 @@ public class AlgorithmThread extends Thread {
         path.add(curCell);
 
         while(curCell.getPrev() != null){
+            System.out.println("WTF");
             path.add(curCell.getPrev());
             curCell = curCell.getPrev();
-            if(curCell.equals(startCell)){
-                curCell.setCellType(CellType.START);
-            }
         }
-        this.grid.update();
+
         Collections.reverse(path);
+
         //animate the path
         for(Cell cell : path){
             if(cell == startCell) System.out.println("startCell = " + cell);
@@ -120,8 +116,8 @@ public class AlgorithmThread extends Thread {
     }
 
 
-    private double getManhattanDistance(Point source, Point destination){
-        return Math.abs(source.x - destination.x) + Math.abs(source.y - destination.y);
+    private double getHeuristic(Point source, Point destination){
+        return Math.abs(source.getX() - destination.getX()) + Math.abs(source.getY() - destination.getY());
     }
 
     private void processNeighbourDijkstra(Cell curCell, Edge edge){
@@ -146,7 +142,7 @@ public class AlgorithmThread extends Thread {
         }
     }
 
-    private void processNeighbourAStar(Cell curCell, Edge edge){
+    private void processNeighbourAStar(Cell curCell, Edge edge, Cell goalCell){
         Cell neighbourCell = edge.getDestination();
         if(neighbourCell.getCellType() == CellType.WALL){
             return;
@@ -156,7 +152,7 @@ public class AlgorithmThread extends Thread {
         }
 
         double startDist = curCell.getDistanceFromStart() + edge.getCost();
-        double goalDist = getManhattanDistance(neighbourCell.getPosition(), goalCell.getPosition());
+        double goalDist = getHeuristic(neighbourCell.getPosition(), goalCell.getPosition());
         double approxCost = startDist + goalDist;
 
         if(neighbourCell.getCellType() != CellType.EXPLORED
@@ -167,9 +163,6 @@ public class AlgorithmThread extends Thread {
         if(!priorityQueue.contains(neighbourCell) || startDist < neighbourCell.getDistanceFromStart()){
             neighbourCell.setDistanceFromStart(startDist);
             neighbourCell.setCost(approxCost);
-            if(neighbourCell == startCell){
-                System.out.println("What in the fuck everlasting?");
-            }
             neighbourCell.setPrev(curCell);
             priorityQueue.add(neighbourCell);
         }
