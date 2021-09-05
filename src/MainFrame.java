@@ -21,7 +21,6 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public MainFrame(){
 
-        //build the ui
         grid = new Grid(500,500,30,30);
         algorithmThread = new AlgorithmThread(this.grid);
         grid.setAlgorithmThread(this.algorithmThread);
@@ -29,9 +28,9 @@ public class MainFrame extends JFrame implements ActionListener {
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel(new BorderLayout());
 
-        startButton = new JButton("Start");
+        startButton = new JButton("Run");
         startButton.setMnemonic(KeyEvent.VK_S);
-        startButton.setActionCommand("start");
+        startButton.setActionCommand("run");
         startButton.addActionListener(this);
 
         clearButton = new JButton("Clear");
@@ -75,7 +74,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
     //listen to the ui components and respond to user input
     public void actionPerformed(ActionEvent mouseEvent){
-        if("start".equals(mouseEvent.getActionCommand())){
+        if("run".equals(mouseEvent.getActionCommand())){
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
@@ -89,7 +88,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("clear".equals(mouseEvent.getActionCommand())){
-            grid.clear();
+            grid.stopThread();
             startButton.setEnabled(true);
         }
 

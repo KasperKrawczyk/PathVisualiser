@@ -9,7 +9,7 @@ public class Cell implements Comparable<Cell> {
     Point position;
     double distanceFromStart;
     double cost;
-    Cell predecessor;
+    Cell prev;
     ArrayList<Edge> edges;
     boolean isStart;
     boolean isGoal;
@@ -93,12 +93,12 @@ public class Cell implements Comparable<Cell> {
         this.cost = cost;
     }
 
-    public Cell getPredecessor() {
-        return predecessor;
+    public Cell getPrev() {
+        return prev;
     }
 
-    public void setPredecessor(Cell predecessor) {
-        this.predecessor = predecessor;
+    public void setPrev(Cell prev) {
+        this.prev = prev;
     }
 
     public ArrayList<Edge> getEdges() {
@@ -107,6 +107,19 @@ public class Cell implements Comparable<Cell> {
 
     public void setEdges(ArrayList<Edge> edges) {
         this.edges = edges;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cell cell = (Cell) o;
+        return color.equals(cell.color) && position.equals(cell.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, position);
     }
 
     @Override

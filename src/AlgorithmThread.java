@@ -10,17 +10,23 @@ public class AlgorithmThread extends Thread {
     //cells we need to look at
     private PriorityQueue<Cell> priorityQueue;
     private Grid grid;
+    Cell startCell;
+    Cell goalCell;
     boolean isStartChosen = true;
     boolean isEndChosen = true;
-    boolean isCleared = true;
+    boolean isThreadStopped = true;
+    boolean isComputing = true;
     public static Color REG_CELL_COLOR = new Color(218, 200, 140);
     public static Color START_COLOR = new Color(40, 45, 148);
     public static Color GOAL_COLOR = Color.RED;
     public static Color EXPLORED_COLOR = new Color(60, 134, 83);
     public static Color TO_EXPLORE_COLOR = new Color(86, 229, 109);
+    public static Color PATH_COLOR = new Color(250, 100, 36);
 
     public AlgorithmThread(Grid grid){
         this.grid = grid;
+        this.startCell = grid.getStartCell();
+        this.goalCell = grid.getGoalCell();
         //visited = new boolean[grid.getNumRows()][grid.getNumCols()];
         priorityQueue = new PriorityQueue<>();
     }
@@ -32,7 +38,7 @@ public class AlgorithmThread extends Thread {
                 System.out.println("RUNNING");
                 findPath(this.grid.getStartCell(), this.grid.getGoalCell(), 0);
             }
-        }while(!isCleared);
+        }while(!isThreadStopped());
     }
 
     public void findPath(Cell startCell, Cell goalCell, int algorithm){
@@ -41,20 +47,25 @@ public class AlgorithmThread extends Thread {
 
         priorityQueue.add(startCell);
 
-        while(!priorityQueue.isEmpty()){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while(!priorityQueue.isEmpty() && isComputing){
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             this.grid.update();
 
             Cell curCell = priorityQueue.poll();
-            if(curCell.equals(startCell)){
+
+            curCell.setColor(EXPLORED_COLOR);
+
+            if(curCell == startCell){
                 startCell.setColor(START_COLOR);
-            } else if(curCell.equals(goalCell)){
+            }
+            if(curCell == goalCell){
                 goalCell.setColor(GOAL_COLOR);
                 this.grid.update();
+                System.out.println("breaking!");
                 break;
             } else {
                 curCell.setColor(EXPLORED_COLOR);
@@ -74,7 +85,7 @@ public class AlgorithmThread extends Thread {
                         priorityQueue.remove(neighbourCell);
                         neighbourCell.setDistanceFromStart(distanceFromStartCell);
                         neighbourCell.setCost(distanceFromStartCell);
-                        neighbourCell.setPredecessor(curCell);
+                        neighbourCell.setPrev(curCell);
                         priorityQueue.add(neighbourCell);
                     }
                 }
@@ -85,9 +96,9 @@ public class AlgorithmThread extends Thread {
         Cell curCell = goalCell;
         path.add(curCell);
 
-        while(curCell.getPredecessor() != null){
-            path.add(curCell.getPredecessor());
-            curCell = curCell.getPredecessor();
+        while(curCell.getPrev() != null){
+            path.add(curCell.getPrev());
+            curCell = curCell.getPrev();
             if(curCell.equals(startCell)){
                 curCell.setColor(START_COLOR);
             }
@@ -95,14 +106,32 @@ public class AlgorithmThread extends Thread {
         this.grid.update();
         Collections.reverse(path);
         //animate the path
+        for(Cell cell : path){
+            if(cell == startCell) System.out.println("startCell = " + cell);
+            if(cell == goalCell) System.out.println("goalCell = " + cell);
+
+
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            if(cell != startCell && cell != goalCell){
+                System.out.println("animating the path " + cell);
+                cell.setColor(PATH_COLOR);
+                this.grid.update();
+            }
+        }
+        stopThread();
     }
 
     private boolean canComputeAlgorithm(){
-        return isStartChosen && isEndChosen && !isCleared;
+        return isStartChosen && isEndChosen && !isThreadStopped();
     }
 
-    public void clear(){
-        this.isCleared = true;
+    public void stopThread(){
+        this.isComputing = false;
+        this.isThreadStopped = true;
     }
 
 
@@ -126,12 +155,12 @@ public class AlgorithmThread extends Thread {
         isEndChosen = endChosen;
     }
 
-    public boolean isCleared() {
-        return isCleared;
+    public boolean isThreadStopped() {
+        return isThreadStopped;
     }
 
-    public void setCleared(boolean isCleared) {
-        System.out.println("am I cleared? " + isCleared);
-        this.isCleared = isCleared;
+    public void setThreadStopped(boolean isThreadStopped) {
+        System.out.println("am I cleared? " + isThreadStopped);
+        this.isThreadStopped = isThreadStopped;
     }
 }

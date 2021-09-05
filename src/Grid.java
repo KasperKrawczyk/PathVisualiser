@@ -29,12 +29,12 @@ public class Grid extends JPanel implements MouseListener {
         this.cellWidth = width / numCols;
 
 
-        buildGrid();
+        createGrid();
         addMouseListener(this);
         this.setPreferredSize(new Dimension(width, height));
     }
 
-    private void buildGrid(){
+    private void createGrid(){
         this.grid = new Cell[numRows][numCols];
         for(int i = 0; i < numRows; i++){
             for(int j = 0; j < numCols; j++){
@@ -102,14 +102,14 @@ public class Grid extends JPanel implements MouseListener {
     }
 
     public void start(){
-        this.algorithmThread.setCleared(false);
+        this.algorithmThread.setThreadStopped(false);
         this.algorithmThread.start();
     }
 
-    public void clear(){
-        this.algorithmThread.clear();
+    public void stopThread(){
+        this.algorithmThread.stopThread();
         this.algorithmThread = new AlgorithmThread(this);
-        buildGrid();
+        createGrid();
         this.repaint();
     }
 
@@ -159,8 +159,7 @@ public class Grid extends JPanel implements MouseListener {
             startCell.setColor(AlgorithmThread.REG_CELL_COLOR);
             startCell = grid[curMousePosition.x/cellWidth][curMousePosition.y/cellHeight];
             startCell.setColor(AlgorithmThread.START_COLOR);
-        }
-        if(mouseEvent.getButton() == MouseEvent.BUTTON3){
+        } else if(mouseEvent.getButton() == MouseEvent.BUTTON3){
             goalCell.setColor(AlgorithmThread.REG_CELL_COLOR);
             goalCell = grid[curMousePosition.x/cellWidth][curMousePosition.y/cellHeight];
             goalCell.setColor(AlgorithmThread.GOAL_COLOR);
