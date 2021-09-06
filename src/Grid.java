@@ -50,9 +50,9 @@ public class Grid extends JPanel implements MouseListener {
             }
         }
 
-        startCell = grid[1][1];
+        startCell = grid[2][2];
         startCell.setCellType(CellType.START);
-        goalCell = grid[numRows - 2][numCols - 2];
+        goalCell = grid[numRows - 3][numCols - 3];
         goalCell.setCellType(CellType.GOAL);
         this.update();
 
@@ -74,28 +74,28 @@ public class Grid extends JPanel implements MouseListener {
 
     private void createEdges(int i, int j){
         if(i + 1 < numRows){
-            this.grid[i][j].addEdge(new Edge(cellWidth, this.grid[i + 1][j]));
+            grid[i][j].addEdge(new Edge(cellWidth, grid[i + 1][j]));
         }
         if(j + 1 < numCols){
-            this.grid[i][j].addEdge(new Edge(cellHeight, this.grid[i][j + 1]));
+            grid[i][j].addEdge(new Edge(cellHeight, grid[i][j + 1]));
         }
         if(i - 1 >= 0){
-            this.grid[i][j].addEdge(new Edge(cellWidth, this.grid[i - 1][j]));
+            grid[i][j].addEdge(new Edge(cellWidth, grid[i - 1][j]));
         }
         if(j - 1 >= 0){
-            this.grid[i][j].addEdge(new Edge(cellHeight, this.grid[i][j - 1]));
+            grid[i][j].addEdge(new Edge(cellHeight, grid[i][j - 1]));
         }
         if(i + 1 < numRows && j + 1 < numCols){
-            this.grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), this.grid[i + 1][j + 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i + 1][j + 1]));
         }
         if(i - 1 >= 0 && j - 1 >= 0){
-            this.grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), this.grid[i - 1][j - 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i - 1][j - 1]));
         }
         if(i + 1 < numRows && j - 1 >= 0){
-            this.grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), this.grid[i + 1][j - 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i + 1][j - 1]));
         }
         if(i - 1 >= 0 && j + 1 < numCols){
-            this.grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), this.grid[i - 1][j + 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i - 1][j + 1]));
         }
     }
 
@@ -110,8 +110,9 @@ public class Grid extends JPanel implements MouseListener {
 
     public void stopThread(){
         this.algorithmThread.stopThread();
-        this.algorithmThread = new AlgorithmThread(this);
         createGrid();
+        this.algorithmThread = new AlgorithmThread(this);
+
         this.repaint();
     }
 
@@ -168,6 +169,7 @@ public class Grid extends JPanel implements MouseListener {
 
             startCell.setCellType(CellType.REGULAR);
             startCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+            this.algorithmThread.setStartCell(startCell);
             curCell.setCellType(CellType.START);
 
         } else if (mouseEvent.isControlDown()
@@ -181,6 +183,7 @@ public class Grid extends JPanel implements MouseListener {
             goalCell.setCellType(CellType.REGULAR);
             goalCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
             curCell.setCellType(CellType.GOAL);
+            algorithmThread.setGoalCell(goalCell);
         }
 
         update();

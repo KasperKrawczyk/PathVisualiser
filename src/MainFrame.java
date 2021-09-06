@@ -86,6 +86,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         if("clear".equals(mouseEvent.getActionCommand())){
+
             grid.stopThread();
             startButton.setEnabled(true);
         }

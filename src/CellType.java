@@ -12,7 +12,15 @@ public enum CellType {
 
     public final Color color;
 
-    private CellType(Color color){
+    CellType(Color color){
         this.color = color;
     }
+
+    @Override
+    public String toString() {
+        return "CellType{" +
+                "color=" + color +
+                '}';
+    }
+
 }

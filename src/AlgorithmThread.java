@@ -66,23 +66,20 @@ public class AlgorithmThread extends Thread {
             }
 
             for(Edge edge : curCell.getEdges()){
-
                 if(algorithm == DIJKSTRA){
                     this.processNeighbourDijkstra(curCell, edge);
-
                 } else if(algorithm == A_STAR){
-                    this.processNeighbourAStar(curCell, edge, goalCell);
-
+                    this.processNeighbourAStar(curCell, edge);
                 }
-
             }
+            priorityQueue.remove(curCell);
+            visitedCellsSet.add(curCell);
         }
         ArrayList<Cell> path = new ArrayList<>();
         Cell curCell = goalCell;
         path.add(curCell);
 
         while(curCell.getPrev() != null){
-            System.out.println("WTF");
             path.add(curCell.getPrev());
             curCell = curCell.getPrev();
         }
@@ -91,27 +88,21 @@ public class AlgorithmThread extends Thread {
 
         //animate the path
         for(Cell cell : path){
-            if(cell == startCell) System.out.println("startCell = " + cell);
-            if(cell == goalCell) System.out.println("goalCell = " + cell);
-
-
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if(cell != startCell && cell != goalCell){
-                System.out.println("animating the path " + cell);
                 cell.setCellType(CellType.PATH);
                 this.grid.update();
             }
         }
-        stopThread();
+        this.setThreadStopped(true);
     }
 
 
     public void stopThread(){
-        this.isComputing = false;
         this.isThreadStopped = true;
     }
 
@@ -125,6 +116,7 @@ public class AlgorithmThread extends Thread {
         if(neighbourCell.getCellType() == CellType.WALL){
             return;
         }
+
         double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
 
         if(neighbourCell.getCellType() != CellType.EXPLORED
@@ -142,17 +134,14 @@ public class AlgorithmThread extends Thread {
         }
     }
 
-    private void processNeighbourAStar(Cell curCell, Edge edge, Cell goalCell){
+    private void processNeighbourAStar(Cell curCell, Edge edge){
         Cell neighbourCell = edge.getDestination();
-        if(neighbourCell.getCellType() == CellType.WALL){
-            return;
-        }
-        if(visitedCellsSet.contains(neighbourCell)){
+        if(neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)){
             return;
         }
 
         double startDist = curCell.getDistanceFromStart() + edge.getCost();
-        double goalDist = getHeuristic(neighbourCell.getPosition(), goalCell.getPosition());
+        double goalDist = getHeuristic(neighbourCell.getPosition(), this.goalCell.getPosition());
         double approxCost = startDist + goalDist;
 
         if(neighbourCell.getCellType() != CellType.EXPLORED
@@ -160,12 +149,31 @@ public class AlgorithmThread extends Thread {
             neighbourCell.setCellType(CellType.TO_EXPLORE);
         }
 
-        if(!priorityQueue.contains(neighbourCell) || startDist < neighbourCell.getDistanceFromStart()){
-            neighbourCell.setDistanceFromStart(startDist);
-            neighbourCell.setCost(approxCost);
-            neighbourCell.setPrev(curCell);
+        neighbourCell.setDistanceFromStart(startDist);
+        neighbourCell.setCost(approxCost);
+        neighbourCell.setPrev(curCell);
+
+        if(!priorityQueue.contains(neighbourCell)){
             priorityQueue.add(neighbourCell);
         }
+
+//        if(!priorityQueue.contains(neighbourCell)){
+//            neighbourCell.setDistanceFromStart(startDist);
+//            neighbourCell.setCost(approxCost);
+//            neighbourCell.setPrev(curCell);
+//            priorityQueue.add(neighbourCell);
+//        } else {
+//            if(startDist < neighbourCell.getDistanceFromStart()){
+//                neighbourCell.setDistanceFromStart(startDist);
+//                neighbourCell.setCost(approxCost);
+//                neighbourCell.setPrev(curCell);
+//
+//                if(visitedCellsSet.contains(neighbourCell)){
+//                    visitedCellsSet.remove(neighbourCell);
+//                    priorityQueue.add(neighbourCell);
+//                }
+//            }
+//        }
     }
 
     public boolean isStartChosen() {
@@ -184,12 +192,28 @@ public class AlgorithmThread extends Thread {
         isEndChosen = endChosen;
     }
 
+    public Cell getStartCell() {
+        return startCell;
+    }
+
+    public void setStartCell(Cell startCell) {
+        this.startCell = startCell;
+    }
+
+    public Cell getGoalCell() {
+        return goalCell;
+    }
+
+    public void setGoalCell(Cell goalCell) {
+        this.goalCell = goalCell;
+    }
+
     public boolean isThreadStopped() {
         return isThreadStopped;
     }
 
     public void setThreadStopped(boolean isThreadStopped) {
-        System.out.println("am I cleared? " + isThreadStopped);
+        System.out.println(this + " stopped? =" + isThreadStopped);
         this.isThreadStopped = isThreadStopped;
     }
 }

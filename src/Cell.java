@@ -18,7 +18,7 @@ public class Cell implements Comparable<Cell> {
     public Cell(Point position, int width, int height) {
         this.width = width;
         this.height = height;
-        cellType = CellType.REGULAR;
+        this.cellType = CellType.REGULAR;
         this.color = cellType.color;
         this.position = position;
         this.distanceFromStart = Double.POSITIVE_INFINITY;
@@ -39,7 +39,8 @@ public class Cell implements Comparable<Cell> {
                 this.position.x,
                 this.position.y,
                 this.width,
-                this.height);
+                this.height
+        );
 
     }
 
@@ -130,7 +131,7 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, position);
+        return Objects.hash(cellType, position);
     }
 
     @Override
@@ -140,6 +141,6 @@ public class Cell implements Comparable<Cell> {
 
     @Override
     public String toString(){
-        return "Cell " + position.getX() + ", " + position.getY();
+        return "Cell " + position.getX() + ", " + position.getY() + ", " + this.getCellType();
     }
 }
