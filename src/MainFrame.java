@@ -15,15 +15,15 @@ public class MainFrame extends JFrame implements ActionListener {
     private JButton startButton;
     private JButton clearButton;
     private JSpinner stepSpinner;
-    private JComboBox algorithmList;
+    private JComboBox algorithmDropdown;
     private JLabel stepSpinnerLabel;
-    private JLabel algorithmListLabel;
+    private JLabel algorithmDropdownLabel;
 
     public MainFrame(){
 
         grid = new Grid(500,500,30,30);
-        algorithmThread = new AlgorithmThread(this.grid);
-        grid.setAlgorithmThread(this.algorithmThread);
+//        algorithmThread = new AlgorithmThread(this.grid);
+//        grid.setAlgorithmThread(this.algorithmThread);
 
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel(new BorderLayout());
@@ -45,10 +45,10 @@ public class MainFrame extends JFrame implements ActionListener {
 //        stepSpinnerLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         String algorithms[] = {"Dijkstra" , "A*"};
-        algorithmList = new JComboBox(algorithms);
-        algorithmListLabel = new JLabel("Search Algorithm: ");
-        algorithmListLabel.setLabelFor(algorithmList);
-        algorithmListLabel.setHorizontalAlignment(JLabel.LEFT);
+        algorithmDropdown = new JComboBox(algorithms);
+        algorithmDropdownLabel = new JLabel("Search Algorithm: ");
+        algorithmDropdownLabel.setLabelFor(algorithmDropdown);
+        algorithmDropdownLabel.setHorizontalAlignment(JLabel.LEFT);
 
         buttonPanel = new JPanel(new GridLayout(2, 1, 0, 10));
         buttonPanel.add(startButton);
@@ -56,8 +56,8 @@ public class MainFrame extends JFrame implements ActionListener {
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
         optionPanel = new JPanel(new GridLayout(1, 2, 15, 5));
-        optionPanel.add(algorithmListLabel);
-        optionPanel.add(algorithmList);
+        optionPanel.add(algorithmDropdownLabel);
+        optionPanel.add(algorithmDropdown);
         controlPanel.add(optionPanel, BorderLayout.CENTER);
 
         controlPanel.setPreferredSize(new Dimension(400,75));
@@ -76,7 +76,9 @@ public class MainFrame extends JFrame implements ActionListener {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    grid.start(algorithmList.getSelectedIndex());
+                    algorithmThread = new AlgorithmThread(grid);
+                    grid.setAlgorithmThread(algorithmThread);
+                    grid.start(algorithmDropdown.getSelectedIndex());
 
                     return null;
                 }

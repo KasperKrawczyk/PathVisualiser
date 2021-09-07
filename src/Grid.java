@@ -101,15 +101,17 @@ public class Grid extends JPanel implements MouseListener {
     }
 
     public void start(int chosenAlgorithm){
+        this.algorithmThread.setGoalCell(goalCell);
+        this.algorithmThread.setStartCell(startCell);
         this.algorithmThread.setChosenAlgorithm(chosenAlgorithm);
         this.algorithmThread.setThreadStopped(false);
         this.algorithmThread.start();
     }
 
     public void stopThread(){
-        this.algorithmThread.stopThread();
+        this.algorithmThread.setThreadStopped(true);
         createGrid();
-        this.algorithmThread = new AlgorithmThread(this);
+        //this.algorithmThread = new AlgorithmThread(this);
 
         update();
     }
@@ -163,25 +165,25 @@ public class Grid extends JPanel implements MouseListener {
 
             curCell.setCellType(CellType.WALL);
 
-        } else if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
-
-            startCell.setCellType(CellType.REGULAR);
-            startCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
-            this.algorithmThread.setStartCell(startCell);
-            curCell.setCellType(CellType.START);
-
-        } else if (mouseEvent.isControlDown()
+        }  else if (mouseEvent.isControlDown()
                 && mouseEvent.getButton() == MouseEvent.BUTTON1
                 && curCell.getCellType() == CellType.WALL) {
 
             curCell.setCellType(CellType.REGULAR);
 
+        } else if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+
+            startCell.setCellType(CellType.REGULAR);
+            startCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+            curCell.setCellType(CellType.START);
+
         }
         if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+
             goalCell.setCellType(CellType.REGULAR);
             goalCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
             curCell.setCellType(CellType.GOAL);
-            algorithmThread.setGoalCell(goalCell);
+
         }
 
         update();

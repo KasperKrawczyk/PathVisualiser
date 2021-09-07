@@ -6,9 +6,9 @@ public class AlgorithmThread extends Thread {
     public static final int DIJKSTRA = 0;
     public static final int A_STAR = 1;
 
-    private Set<Cell> visitedCellsSet;
-    private PriorityQueue<Cell> priorityQueue;
-    private Grid grid;
+    private final Set<Cell> visitedCellsSet;
+    private final PriorityQueue<Cell> priorityQueue;
+    private final Grid grid;
 
     Cell startCell;
     Cell goalCell;
@@ -18,7 +18,6 @@ public class AlgorithmThread extends Thread {
     boolean isStartChosen = true;
     boolean isEndChosen = true;
     boolean isThreadStopped = true;
-    boolean isComputing = true;
 
     public AlgorithmThread(Grid grid){
         this.visitedCellsSet = new HashSet<>();
@@ -102,12 +101,6 @@ public class AlgorithmThread extends Thread {
         }
         this.setThreadStopped(true);
     }
-
-
-    public void stopThread(){
-        this.isThreadStopped = true;
-    }
-
 
     private double getHeuristic(Point source, Point destination){
         return Math.abs(source.getX() - destination.getX()) + Math.abs(source.getY() - destination.getY());
