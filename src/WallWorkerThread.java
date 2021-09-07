@@ -1,28 +1,34 @@
-import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class WallWorkerThread extends Thread {
     Grid grid;
     boolean isThreadStopped = true;
-    boolean isSettingWalls;
+    CellType cellType;
+    boolean isPainting;
 
-    public WallWorkerThread(Grid grid, boolean isSettingWalls){
+    public WallWorkerThread(Grid grid, boolean isPainting, MouseEvent mouseEvent){
+        this.setCellType(mouseEvent);
         this.grid = grid;
-        this.isSettingWalls = isSettingWalls;
+        this.isPainting = isPainting;
     }
 
     public void run(){
 
         if(!isThreadStopped){
-            System.out.println("isSettingWalls = "+isSettingWalls);
+            System.out.println("isPainting = " + isPainting);
             do{
                 int x = (int) grid.getMousePosition().getX();
                 int y = (int) grid.getMousePosition().getY();
                 Cell curCell = grid.getGrid()[x / grid.getCellWidth()][y / grid.getCellHeight()];
-                if(curCell.getCellType() == CellType.WALL && !isSettingWalls){
-                    curCell.setCellType(CellType.REGULAR);
-                } else if(curCell.getCellType() == CellType.REGULAR && isSettingWalls){
-                    curCell.setCellType(CellType.WALL);
+                if(curCell.getCellType() == CellType.START || curCell.getCellType() == CellType.GOAL){
+                    continue;
+                } else if(this.cellType == curCell.getCellType() && !isPainting){
+                        curCell.setCellType(CellType.REGULAR);
+                } else if(this.cellType != curCell.getCellType() && isPainting){
+                        curCell.setCellType(this.cellType);
                 }
+
+
 
                 this.grid.update();
             }while(!isThreadStopped);
@@ -31,8 +37,16 @@ public class WallWorkerThread extends Thread {
     }
 
     public void setThreadStopped(boolean isThreadStopped) {
-        System.out.println(this + " (WallWorker) stopped? =" + isThreadStopped);
+        System.out.println(this + " (PaintWorker) stopped? =" + isThreadStopped);
         this.isThreadStopped = isThreadStopped;
+    }
+
+    private void setCellType(MouseEvent mouseEvent){
+        if(mouseEvent.getButton() == MouseEvent.BUTTON1){
+            this.cellType = CellType.WALL;
+        } else if(mouseEvent.getButton() == MouseEvent.BUTTON3){
+            this.cellType = CellType.SWAMP;
+        }
     }
 
 }

@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Grid extends JPanel implements MouseListener {
+
+    public static double SWAMP_WEIGHT_PENALTY = 2.5;
+
     private int width;
     private int height;
 
@@ -76,29 +79,32 @@ public class Grid extends JPanel implements MouseListener {
 
     private void createEdgesUtil(int i, int j){
         CellType curCellType = grid[i][j].getCellType();
+
+        double weightFactor = 1;
+        if(curCellType == CellType.SWAMP) weightFactor = SWAMP_WEIGHT_PENALTY;
         if(i + 1 < numRows){
-            grid[i][j].addEdge(new Edge(cellWidth, grid[i + 1][j]));
+            grid[i][j].addEdge(new Edge((int) (cellWidth * weightFactor), grid[i + 1][j]));
         }
         if(j + 1 < numCols){
-            grid[i][j].addEdge(new Edge(cellHeight, grid[i][j + 1]));
+            grid[i][j].addEdge(new Edge((int) (cellWidth * weightFactor), grid[i][j + 1]));
         }
         if(i - 1 >= 0){
-            grid[i][j].addEdge(new Edge(cellWidth, grid[i - 1][j]));
+            grid[i][j].addEdge(new Edge((int) (cellWidth * weightFactor), grid[i - 1][j]));
         }
         if(j - 1 >= 0){
-            grid[i][j].addEdge(new Edge(cellHeight, grid[i][j - 1]));
+            grid[i][j].addEdge(new Edge((int) (cellWidth * weightFactor), grid[i][j - 1]));
         }
         if(i + 1 < numRows && j + 1 < numCols){
-            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i + 1][j + 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j + 1]));
         }
         if(i - 1 >= 0 && j - 1 >= 0){
-            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i - 1][j - 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j - 1]));
         }
         if(i + 1 < numRows && j - 1 >= 0){
-            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i + 1][j - 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j - 1]));
         }
         if(i - 1 >= 0 && j + 1 < numCols){
-            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4), grid[i - 1][j + 1]));
+            grid[i][j].addEdge(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j + 1]));
         }
     }
 
@@ -197,7 +203,7 @@ public class Grid extends JPanel implements MouseListener {
             curCell.setCellType(CellType.START);
 
         }
-        if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+        if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
 
             goalCell.setCellType(CellType.REGULAR);
             goalCell = grid[x / cellWidth][y / cellHeight];
@@ -222,7 +228,20 @@ public class Grid extends JPanel implements MouseListener {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    wallWorkerThread = new WallWorkerThread(grid, grid.isSettingWalls);
+                    wallWorkerThread = new WallWorkerThread(grid, grid.isSettingWalls, mouseEvent);
+                    wallWorkerThread.setThreadStopped(false);
+                    wallWorkerThread.start();
+
+                    return null;
+                }
+            };
+            swingWorker.run();
+            System.out.println("PRESSED");
+        } else if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON3){
+
+            SwingWorker swingWorker = new SwingWorker<Void,Void>(){
+                protected Void doInBackground(){
+                    wallWorkerThread = new WallWorkerThread(grid, grid.isSettingWalls, mouseEvent);
                     wallWorkerThread.setThreadStopped(false);
                     wallWorkerThread.start();
 
@@ -237,13 +256,15 @@ public class Grid extends JPanel implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
 
-            if(mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1){
+            if(mouseEvent.isControlDown() &&
+                    (mouseEvent.getButton() == MouseEvent.BUTTON1 ||
+                    mouseEvent.getButton() == MouseEvent.BUTTON3)){
                 this.wallWorkerThread.setThreadStopped(true);
                 this.wallWorkerThread = null;
                 System.out.println("RELEASED");
                 isSettingWalls = !isSettingWalls;
-
             }
+
     }
 
     @Override
