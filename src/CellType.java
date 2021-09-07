@@ -8,7 +8,8 @@ public enum CellType {
     EXPLORED(new Color(60, 134, 83)),
     TO_EXPLORE(new Color(86, 229, 109)),
     PATH(new Color(250, 100, 36)),
-    WALL(new Color(15, 15, 15));
+    WALL(new Color(15, 15, 15)),
+    SWAMP(new Color(51, 82, 33));
 
     public final Color color;
 

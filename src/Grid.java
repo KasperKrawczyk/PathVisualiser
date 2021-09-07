@@ -44,12 +44,6 @@ public class Grid extends JPanel implements MouseListener {
             }
         }
 
-        for(int i = 0; i < numRows; i++){
-            for(int j = 0; j < numCols; j++){
-                createEdges(i, j);
-            }
-        }
-
         startCell = grid[2][2];
         startCell.setCellType(CellType.START);
         goalCell = grid[numRows - 3][numCols - 3];
@@ -72,7 +66,16 @@ public class Grid extends JPanel implements MouseListener {
         }
     }
 
-    private void createEdges(int i, int j){
+    public void createEdges(){
+        for(int i = 0; i < numRows; i++){
+            for(int j = 0; j < numCols; j++){
+                createEdgesUtil(i, j);
+            }
+        }
+    }
+
+    private void createEdgesUtil(int i, int j){
+        CellType curCellType = grid[i][j].getCellType();
         if(i + 1 < numRows){
             grid[i][j].addEdge(new Edge(cellWidth, grid[i + 1][j]));
         }
@@ -183,20 +186,21 @@ public class Grid extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
 
-        Point curMousePosition = new Point(mouseEvent.getX(), mouseEvent.getY());
-        Cell curCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+        int x = (int) getMousePosition().getX();
+        int y = (int) getMousePosition().getY();
+        Cell curCell = grid[x / getCellWidth()][y / getCellHeight()];
 
         if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
             startCell.setCellType(CellType.REGULAR);
-            startCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+            startCell = grid[x / cellWidth][y / cellHeight];
             curCell.setCellType(CellType.START);
 
         }
         if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
 
             goalCell.setCellType(CellType.REGULAR);
-            goalCell = grid[curMousePosition.x / cellWidth][curMousePosition.y / cellHeight];
+            goalCell = grid[x / cellWidth][y / cellHeight];
             curCell.setCellType(CellType.GOAL);
 
         }
@@ -214,10 +218,7 @@ public class Grid extends JPanel implements MouseListener {
 
         Grid grid = this;
 
-
-        if (mouseEvent.isControlDown()
-                && mouseEvent.getButton() == MouseEvent.BUTTON1) {
-
+        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
@@ -229,26 +230,14 @@ public class Grid extends JPanel implements MouseListener {
                 }
             };
             swingWorker.run();
-
             System.out.println("PRESSED");
-
-
-
-
-
-
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
 
-
-            if(mouseEvent.isControlDown()
-                    && mouseEvent.getButton() == MouseEvent.BUTTON1){
-
-
-
+            if(mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1){
                 this.wallWorkerThread.setThreadStopped(true);
                 this.wallWorkerThread = null;
                 System.out.println("RELEASED");

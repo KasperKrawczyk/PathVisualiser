@@ -17,8 +17,7 @@ public class WallWorkerThread extends Thread {
             do{
                 int x = (int) grid.getMousePosition().getX();
                 int y = (int) grid.getMousePosition().getY();
-                Point curMousePosition = new Point(x, y);
-                Cell curCell = grid.getGrid()[curMousePosition.x / grid.getCellWidth()][curMousePosition.y / grid.getCellHeight()];
+                Cell curCell = grid.getGrid()[x / grid.getCellWidth()][y / grid.getCellHeight()];
                 if(curCell.getCellType() == CellType.WALL && !isSettingWalls){
                     curCell.setCellType(CellType.REGULAR);
                 } else if(curCell.getCellType() == CellType.REGULAR && isSettingWalls){

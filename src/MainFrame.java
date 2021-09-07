@@ -76,6 +76,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
+                    grid.createEdges();
                     algorithmThread = new AlgorithmThread(grid);
                     grid.setAlgorithmThread(algorithmThread);
                     grid.start(algorithmDropdown.getSelectedIndex());

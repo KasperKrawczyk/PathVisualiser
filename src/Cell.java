@@ -44,6 +44,12 @@ public class Cell implements Comparable<Cell> {
 
     }
 
+//    private void updateEdgeCosts(CellType newCellType){
+//        for(Edge edge : this.edges){
+//            edge.setCost();
+//        }
+//    }
+
     public void addEdge(Edge edge){
         edges.add(edge);
     }
