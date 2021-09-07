@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class Grid extends JPanel implements MouseListener {
     private int width;
@@ -103,7 +100,8 @@ public class Grid extends JPanel implements MouseListener {
         this.repaint();
     }
 
-    public void start(){
+    public void start(int chosenAlgorithm){
+        this.algorithmThread.setChosenAlgorithm(chosenAlgorithm);
         this.algorithmThread.setThreadStopped(false);
         this.algorithmThread.start();
     }
@@ -113,7 +111,7 @@ public class Grid extends JPanel implements MouseListener {
         createGrid();
         this.algorithmThread = new AlgorithmThread(this);
 
-        this.repaint();
+        update();
     }
 
     public int getWidth() {

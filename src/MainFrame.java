@@ -76,7 +76,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    grid.start();
+                    grid.start(algorithmList.getSelectedIndex());
 
                     return null;
                 }
@@ -91,24 +91,11 @@ public class MainFrame extends JFrame implements ActionListener {
             startButton.setEnabled(true);
         }
 
-//        if(e.getSource() == gridEditorList){
-//            grid.setPositionable(gridEditorList.getSelectedIndex());
-//        }
-
     }
     public static void main(String[] args){
         MainFrame mf = new MainFrame();
         mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mf.setTitle("Interactive PathVisualiser");
         mf.setVisible(true);
-//        SwingUtilities.invokeLater(new Runnable(){
-//            @Override
-//            public void run() {
-//                MainFrame mainFrame = new MainFrame();
-//                mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                mainFrame.setTitle("Pathfinding Visualiser Version 1.1");
-//                mainFrame.setVisible(true);
-//            }
-//        });
     }
 }
