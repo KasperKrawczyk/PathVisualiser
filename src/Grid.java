@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 public class Grid extends JPanel implements MouseListener {
 
-    public static double SWAMP_WEIGHT_PENALTY = 2.5;
+    public static double SWAMP_WEIGHT_PENALTY = 4.5;
 
     private int width;
     private int height;
@@ -15,7 +15,7 @@ public class Grid extends JPanel implements MouseListener {
     private int numRows;
     private int numCols;
 
-    private boolean isPainting = true;
+    private boolean isPainting = false;
 
     private Cell[][] grid;
     private Cell startCell;
@@ -128,6 +128,14 @@ public class Grid extends JPanel implements MouseListener {
         update();
     }
 
+    public boolean isPainting() {
+        return isPainting;
+    }
+
+    public void setPainting(boolean painting) {
+        isPainting = painting;
+    }
+
     public Cell[][] getGrid() {
         return grid;
     }
@@ -224,10 +232,11 @@ public class Grid extends JPanel implements MouseListener {
 
         Grid grid = this;
 
-        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+        if (!isPainting && mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
+                    grid.setPainting(true);
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
                     painterThread.start();
@@ -237,10 +246,11 @@ public class Grid extends JPanel implements MouseListener {
             };
             swingWorker.run();
             System.out.println("PRESSED");
-        } else if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON3){
+        } else if (!isPainting && mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3){
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
+                    grid.setPainting(true);
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
                     painterThread.start();
@@ -256,14 +266,20 @@ public class Grid extends JPanel implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
 
-            if(mouseEvent.isControlDown() &&
-                    (mouseEvent.getButton() == MouseEvent.BUTTON1 ||
-                    mouseEvent.getButton() == MouseEvent.BUTTON3)){
-                this.painterThread.setThreadStopped(true);
-                this.painterThread = null;
-                System.out.println("RELEASED");
-                isPainting = !isPainting;
-            }
+        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+            this.painterThread.setThreadStopped(true);
+            this.painterThread = null;
+            System.out.println("RELEASED");
+            isPainting = !isPainting;
+        }
+
+        if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            this.painterThread.setThreadStopped(true);
+            this.painterThread = null;
+            System.out.println("RELEASED");
+            isPainting = !isPainting;
+        }
+
 
     }
 
