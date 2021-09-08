@@ -15,14 +15,14 @@ public class Grid extends JPanel implements MouseListener {
     private int numRows;
     private int numCols;
 
-    private boolean isSettingWalls = true;
+    private boolean isPainting = true;
 
     private Cell[][] grid;
     private Cell startCell;
     private Cell goalCell;
 
     private AlgorithmThread algorithmThread;
-    private WallWorkerThread wallWorkerThread;
+    private PainterThread painterThread;
 
     public Grid(int height, int width, int numRows, int numCols){
         this.width = width;
@@ -228,9 +228,9 @@ public class Grid extends JPanel implements MouseListener {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    wallWorkerThread = new WallWorkerThread(grid, grid.isSettingWalls, mouseEvent);
-                    wallWorkerThread.setThreadStopped(false);
-                    wallWorkerThread.start();
+                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
+                    painterThread.setThreadStopped(false);
+                    painterThread.start();
 
                     return null;
                 }
@@ -241,9 +241,9 @@ public class Grid extends JPanel implements MouseListener {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    wallWorkerThread = new WallWorkerThread(grid, grid.isSettingWalls, mouseEvent);
-                    wallWorkerThread.setThreadStopped(false);
-                    wallWorkerThread.start();
+                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
+                    painterThread.setThreadStopped(false);
+                    painterThread.start();
 
                     return null;
                 }
@@ -259,10 +259,10 @@ public class Grid extends JPanel implements MouseListener {
             if(mouseEvent.isControlDown() &&
                     (mouseEvent.getButton() == MouseEvent.BUTTON1 ||
                     mouseEvent.getButton() == MouseEvent.BUTTON3)){
-                this.wallWorkerThread.setThreadStopped(true);
-                this.wallWorkerThread = null;
+                this.painterThread.setThreadStopped(true);
+                this.painterThread = null;
                 System.out.println("RELEASED");
-                isSettingWalls = !isSettingWalls;
+                isPainting = !isPainting;
             }
 
     }

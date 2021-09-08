@@ -5,25 +5,20 @@ import javax.swing.*;
 
 public class MainFrame extends JFrame implements ActionListener {
 
-    //ui components
-    private Grid grid;
+    private final Grid grid;
     private AlgorithmThread algorithmThread;
-    private JPanel container;
-    private JPanel controlPanel;
-    private JPanel buttonPanel;
-    private JPanel optionPanel;
-    private JButton startButton;
-    private JButton clearButton;
-    private JSpinner stepSpinner;
-    private JComboBox algorithmDropdown;
-    private JLabel stepSpinnerLabel;
-    private JLabel algorithmDropdownLabel;
+    private final JPanel container;
+    private final JPanel controlPanel;
+    private final JPanel buttonPanel;
+    private final JPanel optionPanel;
+    private final JButton startButton;
+    private final JButton clearButton;
+    private final JComboBox algorithmDropdown;
+    private final JLabel algorithmDropdownLabel;
 
     public MainFrame(){
 
-        grid = new Grid(500,500,30,30);
-//        algorithmThread = new AlgorithmThread(this.grid);
-//        grid.setAlgorithmThread(this.algorithmThread);
+        grid = new Grid(500,500,45,45);
 
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel(new BorderLayout());
@@ -38,35 +33,30 @@ public class MainFrame extends JFrame implements ActionListener {
         clearButton.setActionCommand("clear");
         clearButton.addActionListener(this);
 
-//        SpinnerNumberModel stepSizeModel = new SpinnerNumberModel(250, 50, 1000, 50);
-//        stepSpinner = new JSpinner(stepSizeModel);
-//        stepSpinnerLabel = new JLabel("Time per Step (ms): ");
-//        stepSpinnerLabel.setLabelFor(stepSpinner);
-//        stepSpinnerLabel.setHorizontalAlignment(JLabel.RIGHT);
-
         String algorithms[] = {"Dijkstra" , "A*"};
         algorithmDropdown = new JComboBox(algorithms);
-        algorithmDropdownLabel = new JLabel("Search Algorithm: ");
+        algorithmDropdownLabel = new JLabel("Pick algorithm: ");
         algorithmDropdownLabel.setLabelFor(algorithmDropdown);
-        algorithmDropdownLabel.setHorizontalAlignment(JLabel.LEFT);
+        algorithmDropdown.setSize(new Dimension(55, 10));
+        algorithmDropdownLabel.setHorizontalAlignment(JLabel.RIGHT);
 
         buttonPanel = new JPanel(new GridLayout(2, 1, 0, 10));
         buttonPanel.add(startButton);
         buttonPanel.add(clearButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        optionPanel = new JPanel(new GridLayout(1, 2, 15, 5));
+        optionPanel = new JPanel(new GridLayout(1, 2, 25, 5));
         optionPanel.add(algorithmDropdownLabel);
         optionPanel.add(algorithmDropdown);
         controlPanel.add(optionPanel, BorderLayout.CENTER);
 
-        controlPanel.setPreferredSize(new Dimension(400,75));
+        controlPanel.setSize(new Dimension(400,65));
 
         container.add(grid, BorderLayout.CENTER);
         container.add(controlPanel, BorderLayout.NORTH);
 
         this.add(container);
-        this.setResizable(false);
+        this.setResizable(true);
         this.pack();
     }
 

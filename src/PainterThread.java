@@ -1,12 +1,12 @@
 import java.awt.event.MouseEvent;
 
-public class WallWorkerThread extends Thread {
+public class PainterThread extends Thread {
     Grid grid;
     boolean isThreadStopped = true;
     CellType cellType;
     boolean isPainting;
 
-    public WallWorkerThread(Grid grid, boolean isPainting, MouseEvent mouseEvent){
+    public PainterThread(Grid grid, boolean isPainting, MouseEvent mouseEvent){
         this.setCellType(mouseEvent);
         this.grid = grid;
         this.isPainting = isPainting;

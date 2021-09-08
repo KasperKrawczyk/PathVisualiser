@@ -9,7 +9,8 @@ public enum CellType {
     TO_EXPLORE(new Color(86, 229, 109)),
     PATH(new Color(250, 100, 36)),
     WALL(new Color(15, 15, 15)),
-    SWAMP(new Color(51, 82, 33));
+    SWAMP(new Color(51, 82, 33)),
+    EXPLORED_SWAMP(new Color(81, 134, 55));
 
     public final Color color;
 
