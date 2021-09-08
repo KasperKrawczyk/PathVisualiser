@@ -7,6 +7,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private final Grid grid;
     private AlgorithmThread algorithmThread;
+    private final ImageIcon startIcon;
+    private final ImageIcon clearIcon;
     private final JPanel container;
     private final JPanel controlPanel;
     private final JPanel buttonPanel;
@@ -20,20 +22,25 @@ public class MainFrame extends JFrame implements ActionListener {
 
         grid = new Grid(500,500,45,45);
 
+        startIcon = new ImageIcon("images/icon_start_30.png");
+        clearIcon = new ImageIcon("images/icon_clear_30.png");
+
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel(new BorderLayout());
 
-        startButton = new JButton("Run");
+        startButton = new JButton();
+        startButton.setIcon(startIcon);
         startButton.setMnemonic(KeyEvent.VK_S);
         startButton.setActionCommand("run");
         startButton.addActionListener(this);
 
-        clearButton = new JButton("Clear");
+        clearButton = new JButton();
+        clearButton.setIcon(clearIcon);
         clearButton.setMnemonic(KeyEvent.VK_R);
         clearButton.setActionCommand("clear");
         clearButton.addActionListener(this);
 
-        String algorithms[] = {"Dijkstra" , "A*"};
+        String algorithms[] = {"Dijkstra" , "A*", "Breadth First Search"};
         algorithmDropdown = new JComboBox(algorithms);
         algorithmDropdownLabel = new JLabel("Pick algorithm: ");
         algorithmDropdownLabel.setLabelFor(algorithmDropdown);
@@ -67,9 +74,9 @@ public class MainFrame extends JFrame implements ActionListener {
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
                     grid.createEdges();
-                    algorithmThread = new AlgorithmThread(grid);
+                    algorithmThread = new AlgorithmThread(grid, algorithmDropdown.getSelectedIndex());
                     grid.setAlgorithmThread(algorithmThread);
-                    grid.start(algorithmDropdown.getSelectedIndex());
+                    grid.start();
 
                     return null;
                 }

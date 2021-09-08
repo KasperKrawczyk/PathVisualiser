@@ -112,10 +112,9 @@ public class Grid extends JPanel implements MouseListener {
         this.repaint();
     }
 
-    public void start(int chosenAlgorithm){
+    public void start(){
         this.algorithmThread.setGoalCell(goalCell);
         this.algorithmThread.setStartCell(startCell);
-        this.algorithmThread.setChosenAlgorithm(chosenAlgorithm);
         this.algorithmThread.setThreadStopped(false);
         this.algorithmThread.start();
     }

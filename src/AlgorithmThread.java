@@ -5,23 +5,30 @@ public class AlgorithmThread extends Thread {
 
     public static final int DIJKSTRA = 0;
     public static final int A_STAR = 1;
+    public static final int BFS = 2;
 
     private final Set<Cell> visitedCellsSet;
-    private final PriorityQueue<Cell> priorityQueue;
+    private PriorityQueue<Cell> priorityQueue;
+    private Queue<Cell> queue;
     private final Grid grid;
 
-    Cell startCell;
-    Cell goalCell;
+    private Cell startCell;
+    private Cell goalCell;
 
     int chosenAlgorithm;
 
-    boolean isStartChosen = true;
-    boolean isEndChosen = true;
-    boolean isThreadStopped = true;
+    private boolean isStartChosen = true;
+    private boolean isEndChosen = true;
+    private boolean isThreadStopped = true;
 
-    public AlgorithmThread(Grid grid){
+    public AlgorithmThread(Grid grid, int chosenAlgorithm){
+        this.chosenAlgorithm = chosenAlgorithm;
+        if(chosenAlgorithm == BFS){
+            this.queue = new LinkedList<>();
+        } else {
+            this.priorityQueue = new PriorityQueue<>();
+        }
         this.visitedCellsSet = new HashSet<>();
-        this.priorityQueue = new PriorityQueue<>();
         this.grid = grid;
         this.startCell = grid.getStartCell();
         this.goalCell = grid.getGoalCell();
@@ -29,9 +36,55 @@ public class AlgorithmThread extends Thread {
     }
 
     public void run(){
-        do{
-            findPath(this.grid.getStartCell(), this.grid.getGoalCell(), chosenAlgorithm);
-        }while(!isThreadStopped());
+        if(this.chosenAlgorithm == BFS){
+            do{
+                findPathBFS(this.grid.getStartCell(), this.grid.getGoalCell());
+            }while(!isThreadStopped());
+        } else {
+            do{
+                findPath(this.grid.getStartCell(), this.grid.getGoalCell(), chosenAlgorithm);
+            }while(!isThreadStopped());
+        }
+    }
+
+    public void findPathBFS(Cell startCell, Cell goalCell){
+        queue.add(startCell);
+        visitedCellsSet.add(startCell);
+
+        while(!queue.isEmpty() && !isThreadStopped()){
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.grid.update();
+
+            Cell curCell = queue.poll();
+            System.out.println("curCell = " + curCell);
+
+            curCell.setCellType(CellType.EXPLORED);
+
+            if(curCell == startCell){
+                startCell.setCellType(CellType.START);
+            }
+            if(curCell == goalCell){
+                goalCell.setCellType(CellType.GOAL);
+                this.grid.update();
+                break;
+            }
+
+            for(Edge edge : curCell.getEdges()){
+                this.processNeighbourBFS(curCell, edge);
+            }
+            //queue.remove(curCell);
+            //visitedCellsSet.add(curCell);
+        }
+
+        ArrayList<Cell> path = this.buildPath(goalCell);
+        Collections.reverse(path);
+        //animate the path
+        this.animatePath(path, startCell, goalCell);
+        this.setThreadStopped(true);
     }
 
     public void findPath(Cell startCell, Cell goalCell, int algorithm){
@@ -76,29 +129,13 @@ public class AlgorithmThread extends Thread {
             priorityQueue.remove(curCell);
             visitedCellsSet.add(curCell);
         }
-        ArrayList<Cell> path = new ArrayList<>();
-        Cell curCell = goalCell;
-        path.add(curCell);
 
-        while(curCell.getPrev() != null){
-            path.add(curCell.getPrev());
-            curCell = curCell.getPrev();
-        }
+        ArrayList<Cell> path = this.buildPath(goalCell);
 
         Collections.reverse(path);
 
         //animate the path
-        for(Cell cell : path){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(cell != startCell && cell != goalCell){
-                cell.setCellType(CellType.PATH);
-                this.grid.update();
-            }
-        }
+        this.animatePath(path, startCell, goalCell);
         this.setThreadStopped(true);
     }
 
@@ -158,6 +195,51 @@ public class AlgorithmThread extends Thread {
             if (visitedCellsSet.contains(neighbourCell)) {
                 visitedCellsSet.remove(neighbourCell);
                 priorityQueue.add(neighbourCell);
+            }
+        }
+    }
+
+    private void processNeighbourBFS(Cell curCell, Edge edge){
+        Cell neighbourCell = edge.getDestination();
+        if(neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)){
+            return;
+        }
+
+        if(neighbourCell.getCellType() != CellType.EXPLORED
+                && neighbourCell.getCellType() != CellType.START
+                && neighbourCell.getCellType() != CellType.GOAL){
+            neighbourCell.setCellType(CellType.TO_EXPLORE);
+        }
+
+
+            queue.add(neighbourCell);
+            neighbourCell.setPrev(curCell);
+            visitedCellsSet.add(neighbourCell);
+    }
+
+    private ArrayList<Cell> buildPath(Cell goalCell){
+        ArrayList<Cell> path = new ArrayList<>();
+        Cell curCell = goalCell;
+        path.add(curCell);
+
+        while(curCell.getPrev() != null){
+            //System.out.println("curCell = " + curCell + "|| prev = " + curCell.getPrev());
+            path.add(curCell.getPrev());
+            curCell = curCell.getPrev();
+        }
+        return path;
+    }
+
+    private void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell){
+        for(Cell cell : path){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if(cell != startCell && cell != goalCell){
+                cell.setCellType(CellType.PATH);
+                this.grid.update();
             }
         }
     }
