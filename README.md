@@ -7,9 +7,10 @@ Simple Java program to visualise searching and path-finding algorithms
 
 So far, the program supports the Dijkstra and the A* path-finding algorithms, as well as the Breadth-First search searching algorithms.
 The first two search 8-directionally, whereas BFS has been implemented as a 4-directional search algorithm.
+
 <p align="center">
-![](https://github.com/KasperKrawczyk/PathVisualiser/blob/BFS/PathVisualiser.gif)
- </p>
+  <img src="https://github.com/KasperKrawczyk/PathVisualiser/blob/BFS/PathVisualiser.gif" alt="showcase gif" />
+</p>
 
 ### Executing program
 
