@@ -78,41 +78,46 @@ public class Grid extends JPanel implements MouseListener {
     }
 
     private void createEdgesUtil(int i, int j){
-        CellType curCellType = grid[i][j].getCellType();
+        Cell curCell = grid[i][j];
+        CellType curCellType = curCell.getCellType();
 
         double weightFactor = 1;
         if(curCellType == CellType.SWAMP) weightFactor = SWAMP_WEIGHT_PENALTY;
         if(i + 1 < numRows){
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i + 1][j]);
-            grid[i][j].addEdgeEightDir(newEdge);
-            grid[i][j].addEdgeFourDir(newEdge);
+            curCell.addEdgeEightDir(newEdge);
+            curCell.addEdgeFourDir(newEdge);
         }
         if(j + 1 < numCols){
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i][j + 1]);
-            grid[i][j].addEdgeEightDir(newEdge);
-            grid[i][j].addEdgeFourDir(newEdge);
+            curCell.addEdgeEightDir(newEdge);
+            curCell.addEdgeFourDir(newEdge);
         }
         if(i - 1 >= 0){
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i - 1][j]);
-            grid[i][j].addEdgeEightDir(newEdge);
-            grid[i][j].addEdgeFourDir(newEdge);
+            curCell.addEdgeEightDir(newEdge);
+            curCell.addEdgeFourDir(newEdge);
         }
         if(j - 1 >= 0){
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i][j - 1]);
-            grid[i][j].addEdgeEightDir(newEdge);
-            grid[i][j].addEdgeFourDir(newEdge);
+            curCell.addEdgeEightDir(newEdge);
+            curCell.addEdgeFourDir(newEdge);
         }
         if(i + 1 < numRows && j + 1 < numCols){
-            grid[i][j].addEdgeEightDir(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j + 1]));
+            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j + 1]);
+            curCell.addEdgeEightDir(newEdge);
         }
         if(i - 1 >= 0 && j - 1 >= 0){
-            grid[i][j].addEdgeEightDir(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j - 1]));
+            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j - 1]);
+            curCell.addEdgeEightDir(newEdge);
         }
         if(i + 1 < numRows && j - 1 >= 0){
-            grid[i][j].addEdgeEightDir(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j - 1]));
+            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j - 1]);
+            curCell.addEdgeEightDir(newEdge);
         }
         if(i - 1 >= 0 && j + 1 < numCols){
-            grid[i][j].addEdgeEightDir(new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j + 1]));
+            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j + 1]);
+            curCell.addEdgeEightDir(newEdge);
         }
     }
 
@@ -128,10 +133,10 @@ public class Grid extends JPanel implements MouseListener {
     }
 
     public void stopThread(){
-        this.algorithmThread.setThreadStopped(true);
-        createGrid();
-        //this.algorithmThread = new AlgorithmThread(this);
-
+        if(this.algorithmThread != null){
+            this.algorithmThread.setThreadStopped(true);
+            createGrid();
+        }
         update();
     }
 
