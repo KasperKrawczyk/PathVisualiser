@@ -17,7 +17,7 @@ The program allows the user to place and erase walls (```ctrl + LMB```) and swam
 ### Executing program
 
 * Place the entire project in one folder.
-* It can be run from the Command Prompt with
+* It can be run from command line with
 ```
 java -jar PathVisualiserJava.jar
 ```
