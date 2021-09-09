@@ -11,7 +11,8 @@ public class Cell implements Comparable<Cell> {
     private double distanceFromStart;
     private double cost;
     private Cell prev;
-    private ArrayList<Edge> edges;
+    private ArrayList<Edge> edgesEightDir;
+    private ArrayList<Edge> edgesFourDir;
 
 
 
@@ -22,7 +23,8 @@ public class Cell implements Comparable<Cell> {
         this.color = cellType.color;
         this.position = position;
         this.distanceFromStart = Double.POSITIVE_INFINITY;
-        this.edges = new ArrayList<>();
+        this.edgesEightDir = new ArrayList<>();
+        this.edgesFourDir = new ArrayList<>();
     }
 
     public void draw(Graphics graphics){
@@ -50,8 +52,12 @@ public class Cell implements Comparable<Cell> {
 //        }
 //    }
 
-    public void addEdge(Edge edge){
-        edges.add(edge);
+    public void addEdgeEightDir(Edge edge){
+        edgesEightDir.add(edge);
+    }
+
+    public void addEdgeFourDir(Edge edge){
+        edgesFourDir.add(edge);
     }
 
     public int getWidth() {
@@ -119,12 +125,20 @@ public class Cell implements Comparable<Cell> {
         this.prev = prev;
     }
 
-    public ArrayList<Edge> getEdges() {
-        return edges;
+    public ArrayList<Edge> getEdgesEightDir() {
+        return edgesEightDir;
     }
 
-    public void setEdges(ArrayList<Edge> edges) {
-        this.edges = edges;
+    public void setEdgesEightDir(ArrayList<Edge> edges) {
+        this.edgesEightDir = edges;
+    }
+
+    public ArrayList<Edge> getEdgesFourDir() {
+        return edgesFourDir;
+    }
+
+    public void setEdgesFourDir(ArrayList<Edge> edgesFourDir) {
+        this.edgesFourDir = edgesFourDir;
     }
 
     @Override

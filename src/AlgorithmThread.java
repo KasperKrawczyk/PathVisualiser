@@ -38,7 +38,7 @@ public class AlgorithmThread extends Thread {
     public void run(){
         if(this.chosenAlgorithm == BFS){
             do{
-                findPathBFS(this.grid.getStartCell(), this.grid.getGoalCell());
+                findGoalBFS(this.grid.getStartCell(), this.grid.getGoalCell());
             }while(!isThreadStopped());
         } else {
             do{
@@ -47,7 +47,7 @@ public class AlgorithmThread extends Thread {
         }
     }
 
-    public void findPathBFS(Cell startCell, Cell goalCell){
+    public void findGoalBFS(Cell startCell, Cell goalCell){
         queue.add(startCell);
         visitedCellsSet.add(startCell);
 
@@ -60,6 +60,7 @@ public class AlgorithmThread extends Thread {
             this.grid.update();
 
             Cell curCell = queue.poll();
+            this.visitedCellsSet.add(curCell);
             System.out.println("curCell = " + curCell);
 
             curCell.setCellType(CellType.EXPLORED);
@@ -73,17 +74,13 @@ public class AlgorithmThread extends Thread {
                 break;
             }
 
-            for(Edge edge : curCell.getEdges()){
-                this.processNeighbourBFS(curCell, edge);
+            for(Edge edge : curCell.getEdgesFourDir()){
+                this.processNeighbourBFS(edge);
             }
             //queue.remove(curCell);
             //visitedCellsSet.add(curCell);
         }
 
-        ArrayList<Cell> path = this.buildPath(goalCell);
-        Collections.reverse(path);
-        //animate the path
-        this.animatePath(path, startCell, goalCell);
         this.setThreadStopped(true);
     }
 
@@ -119,7 +116,7 @@ public class AlgorithmThread extends Thread {
                 break;
             }
 
-            for(Edge edge : curCell.getEdges()){
+            for(Edge edge : curCell.getEdgesEightDir()){
                 if(algorithm == DIJKSTRA){
                     this.processNeighbourDijkstra(curCell, edge);
                 } else if(algorithm == A_STAR){
@@ -199,7 +196,7 @@ public class AlgorithmThread extends Thread {
         }
     }
 
-    private void processNeighbourBFS(Cell curCell, Edge edge){
+    private void processNeighbourBFS(Edge edge){
         Cell neighbourCell = edge.getDestination();
         if(neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)){
             return;
@@ -213,7 +210,6 @@ public class AlgorithmThread extends Thread {
 
 
             queue.add(neighbourCell);
-            neighbourCell.setPrev(curCell);
             visitedCellsSet.add(neighbourCell);
     }
 
@@ -223,7 +219,7 @@ public class AlgorithmThread extends Thread {
         path.add(curCell);
 
         while(curCell.getPrev() != null){
-            //System.out.println("curCell = " + curCell + "|| prev = " + curCell.getPrev());
+            System.out.println("curCell = " + curCell + " || prev = " + curCell.getPrev());
             path.add(curCell.getPrev());
             curCell = curCell.getPrev();
         }
