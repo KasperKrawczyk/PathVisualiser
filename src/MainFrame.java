@@ -26,7 +26,7 @@ public class MainFrame extends JFrame implements ActionListener {
         clearIcon = new ImageIcon("images/icon_clear_30.png");
 
         container = new JPanel(new BorderLayout());
-        controlPanel = new JPanel(new BorderLayout());
+        controlPanel = new JPanel();
 
         startButton = new JButton();
         startButton.setIcon(startIcon);
@@ -52,14 +52,14 @@ public class MainFrame extends JFrame implements ActionListener {
         buttonPanel.add(clearButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        optionPanel = new JPanel(new GridLayout(1, 2, 25, 5));
+        optionPanel = new JPanel();
         optionPanel.add(algorithmDropdownLabel);
         optionPanel.add(algorithmDropdown);
         controlPanel.add(optionPanel, BorderLayout.CENTER);
 
         controlPanel.setSize(new Dimension(400,65));
 
-        container.add(grid, BorderLayout.CENTER);
+        container.add(grid, BorderLayout.SOUTH);
         container.add(controlPanel, BorderLayout.NORTH);
 
         this.add(container);
@@ -92,10 +92,15 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
     }
-    public static void main(String[] args){
+
+    public static void initialise(){
         MainFrame mf = new MainFrame();
         mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mf.setTitle("Interactive PathVisualiser");
         mf.setVisible(true);
+    }
+
+    public static void main(String[] args){
+        MainFrame.initialise();
     }
 }

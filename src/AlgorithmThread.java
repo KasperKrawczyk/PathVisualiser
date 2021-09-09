@@ -229,7 +229,7 @@ public class AlgorithmThread extends Thread {
     private void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell){
         for(Cell cell : path){
             try {
-                Thread.sleep(100);
+                Thread.sleep(25);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

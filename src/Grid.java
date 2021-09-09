@@ -15,7 +15,7 @@ public class Grid extends JPanel implements MouseListener {
     private int numRows;
     private int numCols;
 
-    private boolean isPainting = false;
+    private boolean isPainting = true;
 
     private Cell[][] grid;
     private Cell startCell;
@@ -135,8 +135,9 @@ public class Grid extends JPanel implements MouseListener {
     public void stopThread(){
         if(this.algorithmThread != null){
             this.algorithmThread.setThreadStopped(true);
-            createGrid();
+
         }
+        createGrid();
         update();
     }
 
@@ -244,11 +245,11 @@ public class Grid extends JPanel implements MouseListener {
 
         Grid grid = this;
 
-        if (!isPainting && mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    grid.setPainting(true);
+
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
                     painterThread.start();
@@ -258,11 +259,11 @@ public class Grid extends JPanel implements MouseListener {
             };
             swingWorker.run();
             System.out.println("PRESSED");
-        } else if (!isPainting && mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3){
+        } else if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3){
 
             SwingWorker swingWorker = new SwingWorker<Void,Void>(){
                 protected Void doInBackground(){
-                    grid.setPainting(true);
+
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
                     painterThread.start();
