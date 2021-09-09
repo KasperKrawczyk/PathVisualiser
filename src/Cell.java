@@ -11,8 +11,10 @@ public class Cell implements Comparable<Cell> {
     private double distanceFromStart;
     private double cost;
     private Cell prev;
+    private boolean isSwamp = false;
     private ArrayList<Edge> edgesEightDir;
     private ArrayList<Edge> edgesFourDir;
+
 
 
 
@@ -46,12 +48,6 @@ public class Cell implements Comparable<Cell> {
 
     }
 
-//    private void updateEdgeCosts(CellType newCellType){
-//        for(Edge edge : this.edges){
-//            edge.setCost();
-//        }
-//    }
-
     public void addEdgeEightDir(Edge edge){
         edgesEightDir.add(edge);
     }
@@ -81,8 +77,26 @@ public class Cell implements Comparable<Cell> {
     }
 
     public void setCellType(CellType cellType) {
+        CellType oldCellType = this.cellType;
         this.cellType = cellType;
         this.color = cellType.color;
+        if(cellType == CellType.SWAMP) setSwamp(true);
+        setCellTypeUtil(oldCellType);
+    }
+
+    /**
+     * Determines if this cell should be saved as Swamp when recreating the grid after a search or when painting
+     * @param oldCellType previous CellType of this cell
+     */
+    private void setCellTypeUtil(CellType oldCellType){
+        if(oldCellType == CellType.SWAMP &&
+                (getCellType() == CellType.EXPLORED || getCellType() == CellType.TO_EXPLORE)) {
+            setSwamp(true);
+        } else if(oldCellType == CellType.SWAMP
+                || getCellType() == CellType.REGULAR
+                || getCellType() == CellType.WALL){
+            setSwamp(false);
+        }
     }
 
     public Color getColor() {
@@ -123,6 +137,14 @@ public class Cell implements Comparable<Cell> {
 
     public void setPrev(Cell prev) {
         this.prev = prev;
+    }
+
+    public boolean isSwamp() {
+        return isSwamp;
+    }
+
+    public void setSwamp(boolean swamp) {
+        isSwamp = swamp;
     }
 
     public ArrayList<Edge> getEdgesEightDir() {

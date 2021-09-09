@@ -8,13 +8,15 @@ public class MainFrame extends JFrame implements ActionListener {
     private final Grid grid;
     private AlgorithmThread algorithmThread;
     private final ImageIcon startIcon;
-    private final ImageIcon clearIcon;
+    private final ImageIcon clearAllIcon;
+    private final ImageIcon clearExploredIcon;
     private final JPanel container;
     private final JPanel controlPanel;
     private final JPanel buttonPanel;
     private final JPanel optionPanel;
     private final JButton startButton;
-    private final JButton clearButton;
+    private final JButton clearExploredButton;
+    private final JButton clearAllButton;
     private final JComboBox algorithmDropdown;
     private final JLabel algorithmDropdownLabel;
 
@@ -23,7 +25,8 @@ public class MainFrame extends JFrame implements ActionListener {
         grid = new Grid(500,500,45,45);
 
         startIcon = new ImageIcon("images/icon_start_30.png");
-        clearIcon = new ImageIcon("images/icon_clear_30.png");
+        clearAllIcon = new ImageIcon("images/icon_clearAll_30.png");
+        clearExploredIcon = new ImageIcon("images/icon_clearExplored_30.png");
 
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel();
@@ -34,11 +37,16 @@ public class MainFrame extends JFrame implements ActionListener {
         startButton.setActionCommand("run");
         startButton.addActionListener(this);
 
-        clearButton = new JButton();
-        clearButton.setIcon(clearIcon);
-        clearButton.setMnemonic(KeyEvent.VK_R);
-        clearButton.setActionCommand("clear");
-        clearButton.addActionListener(this);
+        clearAllButton = new JButton();
+        clearAllButton.setIcon(clearAllIcon);
+        clearAllButton.setMnemonic(KeyEvent.VK_R);
+        clearAllButton.setActionCommand("clearAll");
+        clearAllButton.addActionListener(this);
+
+        clearExploredButton = new JButton();
+        clearExploredButton.setIcon(clearExploredIcon);
+        clearExploredButton.setActionCommand("clearExplored");
+        clearExploredButton.addActionListener(this);
 
         String algorithms[] = {"Dijkstra" , "A*", "Breadth First Search"};
         algorithmDropdown = new JComboBox(algorithms);
@@ -49,7 +57,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
         buttonPanel = new JPanel(new GridLayout(2, 1, 0, 10));
         buttonPanel.add(startButton);
-        buttonPanel.add(clearButton);
+        buttonPanel.add(clearExploredButton);
+        buttonPanel.add(clearAllButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
         optionPanel = new JPanel();
@@ -82,13 +91,29 @@ public class MainFrame extends JFrame implements ActionListener {
                 }
             };
             swingWorker.run();
+            clearAllButton.setEnabled(true);
+            clearExploredButton.setEnabled(true);
             startButton.setEnabled(false);
         }
 
-        if("clear".equals(mouseEvent.getActionCommand())){
+        if("clearAll".equals(mouseEvent.getActionCommand())){
 
-            grid.stopThread();
+            grid.stopThreadAndCreateGrid();
             startButton.setEnabled(true);
+            clearAllButton.setEnabled(false);
+            clearExploredButton.setEnabled(false);
+        }
+
+        if("clearExplored".equals(mouseEvent.getActionCommand())){
+            if(this.algorithmThread != null){
+                System.out.println("thread isnt null");
+                grid.stopThread();
+                this.algorithmThread = null;
+            }
+            grid.clearExploredAfterRun();
+
+            startButton.setEnabled(true);
+            clearAllButton.setEnabled(true);
         }
 
     }

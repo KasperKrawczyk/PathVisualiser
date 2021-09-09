@@ -55,6 +55,29 @@ public class Grid extends JPanel implements MouseListener {
 
     }
 
+    public void clearExploredAfterRun(){
+        for(int i = 0; i < numRows; i++){
+            for(int j = 0; j < numCols; j++){
+                Cell curCell = grid[i][j];
+                boolean wasSwamp = curCell.isSwamp();
+                CellType typeToRecreate = curCell.getCellType();
+                grid[i][j] = new Cell(new Point(i * cellWidth, j * cellHeight), cellWidth, cellHeight);
+                if(curCell == startCell) startCell = grid[i][j];
+                if(curCell == goalCell) goalCell = grid[i][j];
+                if(typeToRecreate == CellType.WALL ||
+                        typeToRecreate == CellType.START ||
+                        typeToRecreate == CellType.GOAL){
+                    System.out.println("eh?");
+                    grid[i][j].setCellType(typeToRecreate);
+                }
+                if(wasSwamp){
+                    grid[i][j].setCellType(CellType.SWAMP);
+                }
+            }
+        }
+        this.update();
+    }
+
     public void paintComponent(Graphics graphics){
         graphics.setColor(Color.BLACK);
         graphics.drawRect(0, 0, width, height);
@@ -132,13 +155,20 @@ public class Grid extends JPanel implements MouseListener {
         this.algorithmThread.start();
     }
 
-    public void stopThread(){
+    public void stopThreadAndCreateGrid(){
         if(this.algorithmThread != null){
             this.algorithmThread.setThreadStopped(true);
 
         }
         createGrid();
         update();
+    }
+
+    public void stopThread(){
+        if(this.algorithmThread != null){
+            this.algorithmThread.setThreadStopped(true);
+
+        }
     }
 
     public boolean isPainting() {
