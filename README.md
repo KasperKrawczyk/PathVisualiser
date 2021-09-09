@@ -1,1 +1,1 @@
-﻿# ![](https://github.com/KasperKrawczyk/PathVisualiser/blob/main/PathVisualiser.gif)
+﻿# ![](https://github.com/KasperKrawczyk/PathVisualiser/blob/BFS/PathVisualiser.gif)
