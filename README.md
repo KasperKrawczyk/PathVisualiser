@@ -1,27 +1,15 @@
  
- # Project Title
+ # Path Visualiser
 
-Simple overview of use/purpose.-
+Simple Java program to visualise searching and path-finding algorithms
+
 ## Description
 
 ﻿# ![](https://github.com/KasperKrawczyk/PathVisualiser/blob/BFS/PathVisualiser.gif)
 
--
-
-## Getting Started
-
-### Dependencies
-
--
-
-### Installing
-
--
-
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+
 ```
 code blocks for commands
 ```
