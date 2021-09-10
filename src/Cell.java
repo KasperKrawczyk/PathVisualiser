@@ -24,11 +24,12 @@ public class Cell implements Comparable<Cell> {
     private int width;
     private int height;
     private CellType cellType;
-    private Color color;
     private Point position;
     private double distanceFromStart;
     private double cost;
     private Cell prev;
+    // used for saving the previous state of this cell's CellType in case
+    // it is changed to TO_EXPLORE or EXPLORED
     private boolean isSwamp = false;
     private ArrayList<Edge> edgesEightDir;
     private ArrayList<Edge> edgesFourDir;
@@ -40,7 +41,6 @@ public class Cell implements Comparable<Cell> {
         this.width = width;
         this.height = height;
         this.cellType = CellType.REGULAR;
-        this.color = cellType.color;
         this.position = position;
         this.distanceFromStart = Double.POSITIVE_INFINITY;
         this.edgesEightDir = new ArrayList<>();
@@ -48,7 +48,7 @@ public class Cell implements Comparable<Cell> {
     }
 
     public void draw(Graphics graphics){
-        graphics.setColor(this.color);
+        graphics.setColor(this.cellType.color);
         graphics.fill3DRect(
                 this.position.x,
                 this.position.y,
@@ -97,7 +97,6 @@ public class Cell implements Comparable<Cell> {
     public void setCellType(CellType cellType) {
         CellType oldCellType = this.cellType;
         this.cellType = cellType;
-        this.color = cellType.color;
         if(cellType == CellType.SWAMP) setSwamp(true);
         setCellTypeUtil(oldCellType);
     }
@@ -115,14 +114,6 @@ public class Cell implements Comparable<Cell> {
                 || getCellType() == CellType.WALL){
             setSwamp(false);
         }
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     public Point getPosition() {

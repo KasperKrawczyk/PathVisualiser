@@ -21,15 +21,24 @@ import java.awt.event.MouseEvent;
 public class PainterThread extends Thread {
     Grid grid;
     boolean isThreadStopped = true;
-    CellType cellType;
     boolean isPainting;
+    CellType cellType;
 
+    /**
+     * Creates a PainterThread object
+     * @param grid the Grid object to paint on
+     * @param isPainting boolean flag indicating whether to paint or to clear Wall / Swamp cell types
+     * @param mouseEvent
+     */
     public PainterThread(Grid grid, boolean isPainting, MouseEvent mouseEvent){
         this.setCellType(mouseEvent);
         this.grid = grid;
         this.isPainting = isPainting;
     }
 
+    /**
+     * Runs this thread until the isThreadStopped flag is set to true
+     */
     public void run(){
 
         if(!isThreadStopped){
@@ -54,11 +63,18 @@ public class PainterThread extends Thread {
 
     }
 
+    /**
+     * Setting the isThreadStopped flag to true stops the thread
+     * @param isThreadStopped boolean flag
+     */
     public void setThreadStopped(boolean isThreadStopped) {
-        System.out.println(this + " (PaintWorker) stopped? =" + isThreadStopped);
         this.isThreadStopped = isThreadStopped;
     }
 
+    /**
+     * Sets CellType to use when painting with this thread
+     * @param mouseEvent with the mouse button indicating which CellType to use
+     */
     private void setCellType(MouseEvent mouseEvent){
         if(mouseEvent.getButton() == MouseEvent.BUTTON1){
             this.cellType = CellType.WALL;
