@@ -7,6 +7,8 @@ public class AlgorithmThread extends Thread {
     public static final int A_STAR = 1;
     public static final int BFS = 2;
 
+    int chosenAlgorithm;
+
     private final Set<Cell> visitedCellsSet;
     private PriorityQueue<Cell> priorityQueue;
     private Queue<Cell> queue;
@@ -15,12 +17,15 @@ public class AlgorithmThread extends Thread {
     private Cell startCell;
     private Cell goalCell;
 
-    int chosenAlgorithm;
-
     private boolean isStartChosen = true;
     private boolean isEndChosen = true;
     private boolean isThreadStopped = true;
 
+    /**
+     * Constructs the search algorithm thread with all necessary data structures.
+     * @param grid The grid object for the search to be performed on
+     * @param chosenAlgorithm int indicating what algorithm to perform (0 == DIJKSTRA, 1 == A_STAR, 2 == BFS)
+     */
     public AlgorithmThread(Grid grid, int chosenAlgorithm){
         this.chosenAlgorithm = chosenAlgorithm;
         if(chosenAlgorithm == BFS){
@@ -47,6 +52,11 @@ public class AlgorithmThread extends Thread {
         }
     }
 
+    /**
+     * Attempts to find the goalCell object with the Breadth First Search algorithm.
+     * @param startCell Cell object, start of the search
+     * @param goalCell Cell object, goal of the search
+     */
     public void findGoalBFS(Cell startCell, Cell goalCell){
         queue.add(startCell);
         visitedCellsSet.add(startCell);
@@ -61,7 +71,6 @@ public class AlgorithmThread extends Thread {
 
             Cell curCell = queue.poll();
             this.visitedCellsSet.add(curCell);
-            System.out.println("curCell = " + curCell);
 
             curCell.setCellType(CellType.EXPLORED);
 
@@ -84,6 +93,12 @@ public class AlgorithmThread extends Thread {
         this.setThreadStopped(true);
     }
 
+    /**
+     * Finds the shortest path for the Dijkstra and A* algorithms.
+     * @param startCell Cell object, start of the search
+     * @param goalCell Cell object, goal of the search
+     * @param algorithm int indicating the algorithm (0 == DIJKSTRA, 1 == A_STAR)
+     */
     public void findPath(Cell startCell, Cell goalCell, int algorithm){
         startCell.setDistanceFromStart(0.0);
         if(algorithm == DIJKSTRA) {
@@ -136,10 +151,21 @@ public class AlgorithmThread extends Thread {
         this.setThreadStopped(true);
     }
 
+    /**
+     * Calculates the Manhattan distance between two points
+     * @param source Point object
+     * @param destination Point object
+     * @return double, Manhattan distance between two points
+     */
     private double getHeuristic(Point source, Point destination){
         return Math.abs(source.getX() - destination.getX()) + Math.abs(source.getY() - destination.getY());
     }
 
+    /**
+     * Processes a neighbour cell of curCell for the Dijkstra algorithm (8-directional, 8 edges)
+     * @param curCell current cell
+     * @param edge currently processed edge
+     */
     private void processNeighbourDijkstra(Cell curCell, Edge edge){
         Cell neighbourCell = edge.getDestination();
         if(neighbourCell.getCellType() == CellType.WALL){
@@ -163,6 +189,11 @@ public class AlgorithmThread extends Thread {
         }
     }
 
+    /**
+     * Processes a neighbour cell of curCell for the A* algorithm (8-directional, 8 edges)
+     * @param curCell current cell
+     * @param edge currently processed edge
+     */
     private void processNeighbourAStar(Cell curCell, Edge edge) {
         Cell neighbourCell = edge.getDestination();
         if (neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)) {
@@ -196,6 +227,10 @@ public class AlgorithmThread extends Thread {
         }
     }
 
+    /**
+     * Processes a neighbour cell of curCell for the Breadth First Search algorithm (4-directional, 4 edges)
+     * @param edge currently processed edge
+     */
     private void processNeighbourBFS(Edge edge){
         Cell neighbourCell = edge.getDestination();
         if(neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)){
@@ -213,19 +248,30 @@ public class AlgorithmThread extends Thread {
             visitedCellsSet.add(neighbourCell);
     }
 
+    /**
+     * Iterates over the linked list of getPrev() of every cell in the path, and adds them to the path ArrayList
+     * @param goalCell the end cell of the path
+     * @return ArrayList<Cell> constituting the path
+     */
     private ArrayList<Cell> buildPath(Cell goalCell){
         ArrayList<Cell> path = new ArrayList<>();
         Cell curCell = goalCell;
         path.add(curCell);
 
         while(curCell.getPrev() != null){
-            System.out.println("curCell = " + curCell + " || prev = " + curCell.getPrev());
             path.add(curCell.getPrev());
             curCell = curCell.getPrev();
         }
         return path;
     }
 
+    /**
+     * Iterates over an ArrayList<Cell> of cells constituting the reversed path (Start -> Goal)
+     * Setting each cell (but for Start and Goal) as CellType.PATH, and updating the grid with each iteration
+     * @param path
+     * @param startCell
+     * @param goalCell
+     */
     private void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell){
         for(Cell cell : path){
             try {
