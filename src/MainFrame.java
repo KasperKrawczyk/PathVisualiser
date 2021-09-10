@@ -53,18 +53,18 @@ public class MainFrame extends JFrame implements ActionListener {
         algorithmDropdownLabel = new JLabel("Pick algorithm: ");
         algorithmDropdownLabel.setLabelFor(algorithmDropdown);
         algorithmDropdown.setSize(new Dimension(55, 10));
-        algorithmDropdownLabel.setHorizontalAlignment(JLabel.RIGHT);
+        algorithmDropdownLabel.setHorizontalAlignment(JLabel.LEFT);
 
-        buttonPanel = new JPanel(new GridLayout(2, 1, 0, 10));
+        buttonPanel = new JPanel(new GridLayout(1, 3, 15, 10));
         buttonPanel.add(startButton);
         buttonPanel.add(clearExploredButton);
         buttonPanel.add(clearAllButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        optionPanel = new JPanel();
+        optionPanel = new JPanel(new GridLayout(2,1,0,5));
         optionPanel.add(algorithmDropdownLabel);
         optionPanel.add(algorithmDropdown);
-        controlPanel.add(optionPanel, BorderLayout.CENTER);
+        controlPanel.add(optionPanel, BorderLayout.WEST);
 
         controlPanel.setSize(new Dimension(400,65));
 
