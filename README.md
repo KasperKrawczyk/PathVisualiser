@@ -31,4 +31,4 @@ Kasper Krawczyk
 
 ## Acknowledgements
 
-<a target="_blank" href="https://icons8.com/icon/2579/broom">Broom</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+Icons by <a target="_blank" href="https://icons8.com">Icons8</a>
