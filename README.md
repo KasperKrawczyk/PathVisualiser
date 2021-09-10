@@ -28,3 +28,7 @@ java -jar PathVisualiserJava.jar
 
 Kasper Krawczyk
 [kasper.krawczyk@gmail.com](kasper.krawczyk@gmail.com)
+
+## Acknowledgements
+
+<a target="_blank" href="https://icons8.com/icon/2579/broom">Broom</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
