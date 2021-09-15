@@ -35,7 +35,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private final JPanel container;
     private final JPanel controlPanel;
     private final JPanel buttonPanel;
-    private final JPanel optionPanel;
+    private final JPanel menuPanel;
     private final JButton startButton;
     private final JButton clearExploredButton;
     private final JButton clearAllButton;
@@ -83,10 +83,10 @@ public class MainFrame extends JFrame implements ActionListener {
         buttonPanel.add(clearAllButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        optionPanel = new JPanel(new GridLayout(2,1,0,5));
-        optionPanel.add(algorithmMenuLabel);
-        optionPanel.add(algorithmMenu);
-        controlPanel.add(optionPanel, BorderLayout.WEST);
+        menuPanel = new JPanel(new GridLayout(2,1,0,5));
+        menuPanel.add(algorithmMenuLabel);
+        menuPanel.add(algorithmMenu);
+        controlPanel.add(menuPanel, BorderLayout.WEST);
 
         controlPanel.setSize(new Dimension(400,65));
 
