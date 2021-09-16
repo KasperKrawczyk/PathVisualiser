@@ -25,33 +25,19 @@ import java.io.IOException;
 import javax.sound.sampled.*;
 import javax.swing.*;
 
-public class MainFrame extends JFrame implements ActionListener {
+public class AnimationFrame extends ModeFrame {
 
-    private final Grid grid;
-    private AlgorithmThread algorithmThread;
+
     private final ImageIcon startIcon;
-    private final ImageIcon clearAllIcon;
-    private final ImageIcon clearExploredIcon;
-    private final JPanel container;
-    private final JPanel controlPanel;
-    private final JPanel buttonPanel;
-    private final JPanel menuPanel;
+
+
     private final JButton startButton;
-    private final JButton clearExploredButton;
-    private final JButton clearAllButton;
-    private final JComboBox algorithmMenu;
-    private final JLabel algorithmMenuLabel;
 
-    public MainFrame(){
 
-        grid = new Grid(500,500,45,45);
+    public AnimationFrame(){
 
         startIcon = new ImageIcon("images/icon_start_30.png");
-        clearAllIcon = new ImageIcon("images/icon_clearAll_30.png");
-        clearExploredIcon = new ImageIcon("images/icon_clearExplored_30.png");
 
-        container = new JPanel(new BorderLayout());
-        controlPanel = new JPanel();
 
         startButton = new JButton();
         startButton.setIcon(startIcon);
@@ -59,43 +45,8 @@ public class MainFrame extends JFrame implements ActionListener {
         startButton.setActionCommand("run");
         startButton.addActionListener(this);
 
-        clearAllButton = new JButton();
-        clearAllButton.setIcon(clearAllIcon);
-        clearAllButton.setMnemonic(KeyEvent.VK_R);
-        clearAllButton.setActionCommand("clearAll");
-        clearAllButton.addActionListener(this);
-
-        clearExploredButton = new JButton();
-        clearExploredButton.setIcon(clearExploredIcon);
-        clearExploredButton.setActionCommand("clearExplored");
-        clearExploredButton.addActionListener(this);
-
-        String algorithmTypes[] = {"Dijkstra" , "A*", "Breadth First Search"};
-        algorithmMenu = new JComboBox(algorithmTypes);
-        algorithmMenuLabel = new JLabel("Pick algorithm: ");
-        algorithmMenuLabel.setLabelFor(algorithmMenu);
-        algorithmMenu.setSize(new Dimension(55, 10));
-        algorithmMenuLabel.setHorizontalAlignment(JLabel.LEFT);
-
-        buttonPanel = new JPanel(new GridLayout(1, 3, 15, 10));
         buttonPanel.add(startButton);
-        buttonPanel.add(clearExploredButton);
-        buttonPanel.add(clearAllButton);
-        controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        menuPanel = new JPanel(new GridLayout(2,1,0,5));
-        menuPanel.add(algorithmMenuLabel);
-        menuPanel.add(algorithmMenu);
-        controlPanel.add(menuPanel, BorderLayout.WEST);
-
-        controlPanel.setSize(new Dimension(400,65));
-
-        container.add(grid, BorderLayout.SOUTH);
-        container.add(controlPanel, BorderLayout.NORTH);
-
-        this.add(container);
-        this.setResizable(false);
-        this.pack();
     }
 
     /**
@@ -149,7 +100,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
     }
 
-    private void playSound(ActionEvent actionEvent) {
+    protected void playSound(ActionEvent actionEvent) {
         String source = actionEvent.getActionCommand();
         System.out.println("source = " + source);
         try{
@@ -192,13 +143,13 @@ public class MainFrame extends JFrame implements ActionListener {
      * Initialises a MainFrame object
      */
     public static void initialise(){
-        MainFrame mf = new MainFrame();
-        mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mf.setTitle("Interactive PathVisualiser");
-        mf.setVisible(true);
+        AnimationFrame af = new AnimationFrame();
+        af.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        af.setTitle("Interactive PathVisualiser");
+        af.setVisible(true);
     }
 
     public static void main(String[] args){
-        MainFrame.initialise();
+        AnimationFrame.initialise();
     }
 }

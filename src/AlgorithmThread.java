@@ -27,17 +27,17 @@ public class AlgorithmThread extends Thread {
 
     int chosenAlgorithm;
 
-    private final Set<Cell> visitedCellsSet;
-    private PriorityQueue<Cell> priorityQueue;
-    private Queue<Cell> queue;
-    private final Grid grid;
+    protected final Set<Cell> visitedCellsSet;
+    protected PriorityQueue<Cell> priorityQueue;
+    protected Queue<Cell> queue;
+    protected final Grid grid;
 
-    private Cell startCell;
-    private Cell goalCell;
+    protected Cell startCell;
+    protected Cell goalCell;
 
-    private boolean isStartChosen = true;
-    private boolean isEndChosen = true;
-    private boolean isThreadStopped = true;
+    protected boolean isStartChosen = true;
+    protected boolean isEndChosen = true;
+    protected boolean isThreadStopped = true;
 
     /**
      * Constructs the search algorithm thread with all necessary data structures.
@@ -175,7 +175,7 @@ public class AlgorithmThread extends Thread {
      * @param destination Point object
      * @return double, Manhattan distance between two points
      */
-    private double getHeuristic(Point source, Point destination){
+    protected double getHeuristic(Point source, Point destination){
         return Math.abs(source.getX() - destination.getX()) + Math.abs(source.getY() - destination.getY());
     }
 
@@ -184,7 +184,7 @@ public class AlgorithmThread extends Thread {
      * @param curCell current cell
      * @param edge currently processed edge
      */
-    private void processNeighbourDijkstra(Cell curCell, Edge edge){
+    protected void processNeighbourDijkstra(Cell curCell, Edge edge){
         Cell neighbourCell = edge.getDestination();
         if(neighbourCell.getCellType() == CellType.WALL){
             return;
@@ -212,7 +212,7 @@ public class AlgorithmThread extends Thread {
      * @param curCell current cell
      * @param edge currently processed edge
      */
-    private void processNeighbourAStar(Cell curCell, Edge edge) {
+    protected void processNeighbourAStar(Cell curCell, Edge edge) {
         Cell neighbourCell = edge.getDestination();
         if (neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)) {
             return;
@@ -249,7 +249,7 @@ public class AlgorithmThread extends Thread {
      * Processes a neighbour cell of curCell for the Breadth First Search algorithm (4-directional, 4 edges)
      * @param edge currently processed edge
      */
-    private void processNeighbourBFS(Edge edge){
+    protected void processNeighbourBFS(Edge edge){
         Cell neighbourCell = edge.getDestination();
         if(neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)){
             return;
@@ -271,7 +271,7 @@ public class AlgorithmThread extends Thread {
      * @param goalCell the end cell of the path
      * @return ArrayList<Cell> constituting the path
      */
-    private ArrayList<Cell> buildPath(Cell goalCell){
+    protected ArrayList<Cell> buildPath(Cell goalCell){
         ArrayList<Cell> path = new ArrayList<>();
         Cell curCell = goalCell;
         path.add(curCell);
@@ -290,7 +290,7 @@ public class AlgorithmThread extends Thread {
      * @param startCell
      * @param goalCell
      */
-    private void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell){
+    protected void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell){
         for(Cell cell : path){
             try {
                 Thread.sleep(25);
