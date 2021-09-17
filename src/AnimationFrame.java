@@ -107,21 +107,21 @@ public class AnimationFrame extends ModeFrame {
             switch(source){
                 case "run":
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/run.wav").getAbsoluteFile());
+                            new File("sounds/button_click.wav").getAbsoluteFile());
                     Clip clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
                     break;
                 case "clearExplored":
                     audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/clearExplored.wav").getAbsoluteFile());
+                            new File("sounds/button_click.wav").getAbsoluteFile());
                     clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
                     break;
                 case "clearAll":
                     audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/clearAll.wav").getAbsoluteFile());
+                            new File("sounds/button_click.wav").getAbsoluteFile());
                     clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();

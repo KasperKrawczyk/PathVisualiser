@@ -133,14 +133,14 @@ public class ModeFrame extends JFrame implements ActionListener {
             switch (source) {
                 case "clearExplored":
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/clearExplored.wav").getAbsoluteFile());
+                            new File("sounds/button_click.wav").getAbsoluteFile());
                     Clip clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
                     break;
                 case "clearAll":
                     audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/clearAll.wav").getAbsoluteFile());
+                            new File("sounds/button_click.wav").getAbsoluteFile());
                     clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
