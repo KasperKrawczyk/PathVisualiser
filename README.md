@@ -16,7 +16,7 @@ The program allows the user to place and erase walls (```ctrl + LMB```) and swam
   <img src="PathVisAStar.gif" alt="showcase gif" />
 </p>
 
-### Executing program
+### Executing the program
 
 * Place the entire project in one folder.
 * It can be run from command line with
