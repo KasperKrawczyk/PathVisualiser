@@ -25,9 +25,11 @@ public class InstantAlgorithmThread extends AlgorithmThread {
     /**
      * Creates a InstantAlgorithmThread object
      * @param instantGrid the InstantGrid object to paint on
+     * @param chosenAlgorithm int indicating what algorithm to perform (0 == DIJKSTRA, 1 == A_STAR, 2 == BFS)
      */
-    public InstantAlgorithmThread(InstantGrid instantGrid, int selectedAlgorithm){
-        super(instantGrid, selectedAlgorithm);
+    public InstantAlgorithmThread(InstantGrid instantGrid, int chosenAlgorithm){
+        super(instantGrid, chosenAlgorithm);
+        System.out.println("InstantAlgorithmThread created");
 
     }
 

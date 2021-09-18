@@ -27,7 +27,7 @@ import javax.swing.*;
 
 public class ModeFrame extends JFrame implements ActionListener {
 
-    protected final Grid grid;
+    protected Grid grid;
     protected AlgorithmThread algorithmThread;
 
     protected final ImageIcon clearAllIcon;
@@ -42,10 +42,9 @@ public class ModeFrame extends JFrame implements ActionListener {
     protected final JComboBox algorithmMenu;
     protected final JLabel algorithmMenuLabel;
 
-    public ModeFrame() {
+    public ModeFrame(Grid grid) {
 
-        grid = new Grid(500, 500, 45, 45);
-
+        this.grid = grid;
 
         clearAllIcon = new ImageIcon("images/icon_clearAll_30.png");
         clearExploredIcon = new ImageIcon("images/icon_clearExplored_30.png");
@@ -104,7 +103,7 @@ public class ModeFrame extends JFrame implements ActionListener {
 
             grid.stopThreadAndCreateGrid();
 
-            clearAllButton.setEnabled(false);
+            clearAllButton.setEnabled(true);
             clearExploredButton.setEnabled(false);
 
             playSound(actionEvent);
@@ -132,16 +131,10 @@ public class ModeFrame extends JFrame implements ActionListener {
         try {
             switch (source) {
                 case "clearExplored":
+                case "clearAll":
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
                             new File("sounds/button_click.wav").getAbsoluteFile());
                     Clip clip = AudioSystem.getClip();
-                    clip.open(audioInputStream);
-                    clip.start();
-                    break;
-                case "clearAll":
-                    audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/button_click.wav").getAbsoluteFile());
-                    clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
                     break;

@@ -1,9 +1,16 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class InstantFrame extends ModeFrame{
 
-    protected InstantPainterThread instantPainterThread;
+
+    public InstantFrame(InstantGrid grid){
+        super(grid);
+        algorithmMenu.addActionListener(this);
+        grid.startAlgorithmThread();
+
+    }
 
 
     /**
@@ -11,23 +18,28 @@ public class InstantFrame extends ModeFrame{
      *
      * @param actionEvent
      */
+    @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
+        if(actionEvent.getSource().equals(this.algorithmMenu)){
+            ((InstantGrid)grid).setChosenAlgorithm(algorithmMenu.getSelectedIndex());
+            grid.clearExploredAfterRun();
+            ((InstantGrid)grid).startAlgorithmThread();
+        }
 
         if ("clearAll".equals(actionEvent.getActionCommand())) {
 
             grid.stopThreadAndCreateGrid();
 
-            clearAllButton.setEnabled(false);
-            clearExploredButton.setEnabled(false);
-            this.runInstantPainterThread();
+            clearAllButton.setEnabled(true);
+            clearExploredButton.setEnabled(true);
+            ((InstantGrid)grid).startAlgorithmThread();
 
             playSound(actionEvent);
         }
 
         if ("clearExplored".equals(actionEvent.getActionCommand())) {
             if (this.algorithmThread != null) {
-                System.out.println("thread isnt null");
                 grid.stopThread();
                 this.algorithmThread = null;
             }
@@ -35,40 +47,19 @@ public class InstantFrame extends ModeFrame{
 
 
             clearAllButton.setEnabled(true);
-
-            this.runInstantPainterThread();
+            clearExploredButton.setEnabled(true);
+            ((InstantGrid)grid).startAlgorithmThread();
 
             playSound(actionEvent);
         }
 
     }
 
-    private void runInstantPainterThread(){
-
-        SwingWorker swingWorker = new SwingWorker<Void,Void>(){
-            protected Void doInBackground() {
-
-                grid.createEdges();
-                instantPainterThread = new InstantPainterThread(grid, algorithmMenu.getSelectedIndex());
-                grid.setAlgorithmThread(instantPainterThread);
-                grid.start();
-
-                return null;
-            }
-        };
-        swingWorker.run();
-        clearAllButton.setEnabled(true);
-        clearExploredButton.setEnabled(true);
-    }
-
-
-
     public static void initialise(){
-        InstantFrame iF = new InstantFrame();
-        iF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        iF.setTitle("Interactive PathVisualiser");
-        iF.setVisible(true);
-        iF.runInstantPainterThread();
+        InstantFrame instantFrame = new InstantFrame(new InstantGrid(500, 500, 45, 45));
+        instantFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        instantFrame.setTitle("PathVisualiser InstantMode");
+        instantFrame.setVisible(true);
     }
 
     public static void main(String[] args){

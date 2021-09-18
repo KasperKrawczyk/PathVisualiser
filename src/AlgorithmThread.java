@@ -45,6 +45,7 @@ public class AlgorithmThread extends Thread {
      * @param chosenAlgorithm int indicating what algorithm to perform (0 == DIJKSTRA, 1 == A_STAR, 2 == BFS)
      */
     public AlgorithmThread(Grid grid, int chosenAlgorithm){
+        System.out.println("AlgorithmThread created");
         this.chosenAlgorithm = chosenAlgorithm;
         if(chosenAlgorithm == BFS){
             this.queue = new LinkedList<>();

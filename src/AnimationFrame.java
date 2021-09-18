@@ -17,7 +17,6 @@
  * Sounds by Blizzard
  */
 
-import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -29,12 +28,11 @@ public class AnimationFrame extends ModeFrame {
 
 
     private final ImageIcon startIcon;
-
-
     private final JButton startButton;
 
 
-    public AnimationFrame(){
+    public AnimationFrame(Grid grid){
+        super(grid);
 
         startIcon = new ImageIcon("images/icon_start_30.png");
 
@@ -78,7 +76,7 @@ public class AnimationFrame extends ModeFrame {
 
             grid.stopThreadAndCreateGrid();
             startButton.setEnabled(true);
-            clearAllButton.setEnabled(false);
+            clearAllButton.setEnabled(true);
             clearExploredButton.setEnabled(false);
 
             playSound(actionEvent);
@@ -106,23 +104,11 @@ public class AnimationFrame extends ModeFrame {
         try{
             switch(source){
                 case "run":
+                case "clearExplored":
+                case "clearAll":
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
                             new File("sounds/button_click.wav").getAbsoluteFile());
                     Clip clip = AudioSystem.getClip();
-                    clip.open(audioInputStream);
-                    clip.start();
-                    break;
-                case "clearExplored":
-                    audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/button_click.wav").getAbsoluteFile());
-                    clip = AudioSystem.getClip();
-                    clip.open(audioInputStream);
-                    clip.start();
-                    break;
-                case "clearAll":
-                    audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/button_click.wav").getAbsoluteFile());
-                    clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
                     break;
@@ -143,9 +129,9 @@ public class AnimationFrame extends ModeFrame {
      * Initialises a MainFrame object
      */
     public static void initialise(){
-        AnimationFrame af = new AnimationFrame();
+        AnimationFrame af = new AnimationFrame(new Grid(500, 500, 45, 45));
         af.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        af.setTitle("Interactive PathVisualiser");
+        af.setTitle("PathVisualiser AnimationMode");
         af.setVisible(true);
     }
 
