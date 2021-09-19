@@ -2,11 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class InstantPanel extends ModePanel{
+public class InstantPanel extends ModePanel {
 
 
-
-    public InstantPanel(InstantGrid grid, String panelName){
+    public InstantPanel(InstantGrid grid, String panelName) {
         super(grid, panelName);
         algorithmMenu.addActionListener(this);
         grid.startAlgorithmThread();
@@ -22,10 +21,10 @@ public class InstantPanel extends ModePanel{
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-        if(actionEvent.getSource().equals(this.algorithmMenu)){
-            ((InstantGrid)grid).setChosenAlgorithm(algorithmMenu.getSelectedIndex());
+        if (actionEvent.getSource().equals(this.algorithmMenu)) {
+            ((InstantGrid) grid).setChosenAlgorithm(algorithmMenu.getSelectedIndex());
             grid.clearExploredAfterRun();
-            ((InstantGrid)grid).startAlgorithmThread();
+            ((InstantGrid) grid).startAlgorithmThread();
         }
 
         if ("clearAll".equals(actionEvent.getActionCommand())) {
@@ -34,7 +33,7 @@ public class InstantPanel extends ModePanel{
 
             clearAllButton.setEnabled(true);
             clearExploredButton.setEnabled(true);
-            ((InstantGrid)grid).startAlgorithmThread();
+            ((InstantGrid) grid).startAlgorithmThread();
 
             playSound(actionEvent);
         }
@@ -49,7 +48,7 @@ public class InstantPanel extends ModePanel{
 
             clearAllButton.setEnabled(true);
             clearExploredButton.setEnabled(true);
-            ((InstantGrid)grid).startAlgorithmThread();
+            ((InstantGrid) grid).startAlgorithmThread();
 
             playSound(actionEvent);
         }
@@ -59,14 +58,11 @@ public class InstantPanel extends ModePanel{
     /**
      * Creates an InstantPanel object
      */
-    public static InstantPanel initialise(){
-         return new InstantPanel(new InstantGrid(500, 500, 45, 45), "Instant Panel");
-//        instantFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        instantFrame.setTitle("PathVisualiser InstantMode");
-//        instantFrame.setVisible(true);
+    public static InstantPanel initialise() {
+        return new InstantPanel(new InstantGrid(500, 500, 45, 45), "Instant Panel");
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         InstantPanel.initialise();
     }
 

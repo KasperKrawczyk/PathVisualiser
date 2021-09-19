@@ -1,24 +1,26 @@
 /**
  * Copyright © 2021 Kasper Krawczyk
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- *
+ * <p>
  * Icons by Icons8 (https://icons8.com)
  */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLOutput;
+import java.util.logging.Logger;
 
 public class Grid extends JPanel implements MouseListener {
 
@@ -42,7 +44,7 @@ public class Grid extends JPanel implements MouseListener {
     protected AlgorithmThread algorithmThread;
     protected PainterThread painterThread;
 
-    public Grid(int height, int width, int numRows, int numCols){
+    public Grid(int height, int width, int numRows, int numCols) {
         this.width = width;
         this.height = height;
         this.numRows = numRows;
@@ -61,10 +63,10 @@ public class Grid extends JPanel implements MouseListener {
      * Populates the Grid with new Cell objects
      * Places the Start and the Goal cells in their default positions
      */
-    protected void createGrid(){
+    protected void createGrid() {
         this.grid = new Cell[numRows][numCols];
-        for(int i = 0; i < numRows; i++){
-            for(int j = 0; j < numCols; j++){
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
                 grid[i][j] = new Cell(new Point(i * cellWidth, j * cellHeight), cellWidth, cellHeight);
             }
         }
@@ -81,22 +83,22 @@ public class Grid extends JPanel implements MouseListener {
      * Clears the Grid from the EXPLORED and TO_EXPLORE CellTypes,
      * and preserving Wall and Swamp cells, as well as the positions of the Start and Goal cells
      */
-    public void clearExploredAfterRun(){
+    public void clearExploredAfterRun() {
         System.out.println("clearExploredAfterRun()");
-        for(int i = 0; i < numRows; i++){
-            for(int j = 0; j < numCols; j++){
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
                 Cell curCell = grid[i][j];
                 boolean wasSwamp = curCell.isSwamp();
                 CellType typeToRecreate = curCell.getCellType();
                 grid[i][j] = new Cell(new Point(i * cellWidth, j * cellHeight), cellWidth, cellHeight);
-                if(curCell == startCell) startCell = grid[i][j];
-                if(curCell == goalCell) goalCell = grid[i][j];
-                if(typeToRecreate == CellType.WALL ||
+                if (curCell == startCell) startCell = grid[i][j];
+                if (curCell == goalCell) goalCell = grid[i][j];
+                if (typeToRecreate == CellType.WALL ||
                         typeToRecreate == CellType.START ||
-                        typeToRecreate == CellType.GOAL){
+                        typeToRecreate == CellType.GOAL) {
                     grid[i][j].setCellType(typeToRecreate);
                 }
-                if(wasSwamp){
+                if (wasSwamp) {
                     grid[i][j].setCellType(CellType.SWAMP);
                 }
             }
@@ -106,17 +108,18 @@ public class Grid extends JPanel implements MouseListener {
 
     /**
      * Repaints this component
+     *
      * @param graphics a graphics object
      */
-    public void paintComponent(Graphics graphics){
+    public void paintComponent(Graphics graphics) {
         graphics.setColor(Color.BLACK);
         graphics.drawRect(0, 0, width, height);
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, width, height);
         graphics.setColor(Color.BLACK);
 
-        for(int i = 0; i < numRows; i++){
-            for(int j = 0; j < numCols; j++){
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
                 grid[i][j].draw(graphics);
             }
         }
@@ -125,9 +128,9 @@ public class Grid extends JPanel implements MouseListener {
     /**
      * Creates a set of edges for each Cell in the grid
      */
-    public void createEdges(){
-        for(int i = 0; i < numRows; i++){
-            for(int j = 0; j < numCols; j++){
+    public void createEdges() {
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
                 createEdgesUtil(i, j);
             }
         }
@@ -137,61 +140,62 @@ public class Grid extends JPanel implements MouseListener {
      * Creates a set of edges (4-directional edges are a subset of the 8-directional set)
      * for the currently processed Cell in the createEdges() function
      * For diagonal edges, cost is multiplied by a factor of 1.4. Additional multiplier applies for Swamp cells
+     *
      * @param i row coordinate of the current Cell
      * @param j j column coordinate of the current Cell
      */
-    private void createEdgesUtil(int i, int j){
+    private void createEdgesUtil(int i, int j) {
         Cell curCell = grid[i][j];
         CellType curCellType = curCell.getCellType();
 
         double weightFactor = 1;
-        if(curCellType == CellType.SWAMP) weightFactor = SWAMP_WEIGHT_PENALTY;
-        if(i + 1 < numRows){
+        if (curCellType == CellType.SWAMP) weightFactor = SWAMP_WEIGHT_PENALTY;
+        if (i + 1 < numRows) {
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i + 1][j]);
             curCell.addEdgeEightDir(newEdge);
             curCell.addEdgeFourDir(newEdge);
         }
-        if(j + 1 < numCols){
+        if (j + 1 < numCols) {
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i][j + 1]);
             curCell.addEdgeEightDir(newEdge);
             curCell.addEdgeFourDir(newEdge);
         }
-        if(i - 1 >= 0){
+        if (i - 1 >= 0) {
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i - 1][j]);
             curCell.addEdgeEightDir(newEdge);
             curCell.addEdgeFourDir(newEdge);
         }
-        if(j - 1 >= 0){
+        if (j - 1 >= 0) {
             Edge newEdge = new Edge((int) (cellWidth * weightFactor), grid[i][j - 1]);
             curCell.addEdgeEightDir(newEdge);
             curCell.addEdgeFourDir(newEdge);
         }
-        if(i + 1 < numRows && j + 1 < numCols){
-            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j + 1]);
+        if (i + 1 < numRows && j + 1 < numCols) {
+            Edge newEdge = new Edge((int) (cellHeight * 1.4 * weightFactor), grid[i + 1][j + 1]);
             curCell.addEdgeEightDir(newEdge);
         }
-        if(i - 1 >= 0 && j - 1 >= 0){
-            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j - 1]);
+        if (i - 1 >= 0 && j - 1 >= 0) {
+            Edge newEdge = new Edge((int) (cellHeight * 1.4 * weightFactor), grid[i - 1][j - 1]);
             curCell.addEdgeEightDir(newEdge);
         }
-        if(i + 1 < numRows && j - 1 >= 0){
-            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i + 1][j - 1]);
+        if (i + 1 < numRows && j - 1 >= 0) {
+            Edge newEdge = new Edge((int) (cellHeight * 1.4 * weightFactor), grid[i + 1][j - 1]);
             curCell.addEdgeEightDir(newEdge);
         }
-        if(i - 1 >= 0 && j + 1 < numCols){
-            Edge newEdge = new Edge((int)(cellHeight * 1.4 * weightFactor), grid[i - 1][j + 1]);
+        if (i - 1 >= 0 && j + 1 < numCols) {
+            Edge newEdge = new Edge((int) (cellHeight * 1.4 * weightFactor), grid[i - 1][j + 1]);
             curCell.addEdgeEightDir(newEdge);
         }
     }
 
-    public void update(){
+    public void update() {
         this.repaint();
     }
 
     /**
      * Runs the search algorithm thread object with new Start and Goal cells
      */
-    public void start(){
+    public void start() {
         System.out.println("start() in " + this.getClass());
         this.algorithmThread.setStartCell(startCell);
         this.algorithmThread.setGoalCell(goalCell);
@@ -203,8 +207,8 @@ public class Grid extends JPanel implements MouseListener {
      * Stops the currently running search algorithm thread
      * creates a new grid and updates the Grid component
      */
-    public void stopThreadAndCreateGrid(){
-        if(this.algorithmThread != null){
+    public void stopThreadAndCreateGrid() {
+        if (this.algorithmThread != null) {
             this.algorithmThread.setThreadStopped(true);
 
         }
@@ -215,8 +219,8 @@ public class Grid extends JPanel implements MouseListener {
     /**
      * Stops the currently running search algorithm thread
      */
-    public void stopThread(){
-        if(this.algorithmThread != null){
+    public void stopThread() {
+        if (this.algorithmThread != null) {
             this.algorithmThread.setThreadStopped(true);
 
         }
@@ -299,6 +303,7 @@ public class Grid extends JPanel implements MouseListener {
      * Sets the Start or Goal cell object in the clicked cell
      * ctrl + LMB for Start
      * alt + RMB for Goal
+     *
      * @param mouseEvent
      */
     @Override
@@ -307,7 +312,7 @@ public class Grid extends JPanel implements MouseListener {
         mouseWasClicked(mouseEvent);
     }
 
-    protected void mouseWasClicked(MouseEvent mouseEvent){
+    protected void mouseWasClicked(MouseEvent mouseEvent) {
         int x = (int) getMousePosition().getX();
         int y = (int) getMousePosition().getY();
         Cell curCell = grid[x / getCellWidth()][y / getCellHeight()];
@@ -330,7 +335,7 @@ public class Grid extends JPanel implements MouseListener {
         update();
     }
 
-    private void setIsMousePressed(boolean isMousePressed){
+    private void setIsMousePressed(boolean isMousePressed) {
 
     }
 
@@ -338,17 +343,19 @@ public class Grid extends JPanel implements MouseListener {
     /**
      * Creates and runs the painterThread object, with the isPainting flag passed
      * (true for setting walls / swamps, false for clearing them)
+     *
      * @param mouseEvent
      */
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
+        this.mouseWasPressed(mouseEvent);
+    }
 
-
-
+    protected void mouseWasPressed(MouseEvent mouseEvent) {
         if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
-            SwingWorker swingWorker = new SwingWorker<Void,Void>(){
-                protected Void doInBackground(){
+            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
+                protected Void doInBackground() {
                     Grid grid = Grid.this;
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
@@ -359,10 +366,10 @@ public class Grid extends JPanel implements MouseListener {
             };
             swingWorker.run();
             System.out.println("PRESSED");
-        } else if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3){
+        } else if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
 
-            SwingWorker swingWorker = new SwingWorker<Void,Void>(){
-                protected Void doInBackground(){
+            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
+                protected Void doInBackground() {
                     Grid grid = Grid.this;
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
@@ -376,15 +383,20 @@ public class Grid extends JPanel implements MouseListener {
         }
     }
 
+
     /**
      * Stops the currently running painterThread, and sets the isPainting flag to its opposite
      * for the next painterThread to be called to do the opposite (if the current one is setting
      * walls / swamps, it's successor will clear them)
+     *
      * @param mouseEvent
      */
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
+        this.mouseWasReleased(mouseEvent);
+    }
 
+    protected void mouseWasReleased(MouseEvent mouseEvent) {
         if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
             this.painterThread.setThreadStopped(true);
             this.painterThread = null;
@@ -398,8 +410,6 @@ public class Grid extends JPanel implements MouseListener {
             System.out.println("RELEASED");
             isPainting = !isPainting;
         }
-
-
     }
 
     @Override
