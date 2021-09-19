@@ -1,18 +1,18 @@
 /**
  * Copyright © 2021 Kasper Krawczyk
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- *
+ * <p>
  * Icons by Icons8 (https://icons8.com)
  * Sounds by Blizzard
  */
@@ -21,6 +21,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -48,8 +49,12 @@ public class ModePanel extends JPanel implements ActionListener {
         this.grid = grid;
         this.panelName = panelName;
 
-        clearAllIcon = new ImageIcon("images/icon_clearAll_30.png");
-        clearExploredIcon = new ImageIcon("images/icon_clearExplored_30.png");
+        clearAllIcon = new ImageIcon(getClass()
+                .getClassLoader()
+                .getResource("icon_clearAll_30.png"), "Clear All");
+        clearExploredIcon = new ImageIcon(getClass()
+                .getClassLoader()
+                .getResource("icon_clearExplored_30.png"), "Clear Explored");
 
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel();
@@ -134,8 +139,8 @@ public class ModePanel extends JPanel implements ActionListener {
             switch (source) {
                 case "clearExplored":
                 case "clearAll":
-                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
-                            new File("sounds/button_click.wav").getAbsoluteFile());
+                    URL buttonClickURL = getClass().getClassLoader().getResource("button_click.wav");
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(buttonClickURL);
                     Clip clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
                     clip.start();
@@ -145,11 +150,11 @@ public class ModePanel extends JPanel implements ActionListener {
                     break;
             }
         } catch (LineUnavailableException e) {
-            System.out.println("Something went wrong with the sound = LineUnavailableException");
+            System.out.println("playSound() threw LineUnavailableException");
         } catch (UnsupportedAudioFileException e2) {
-            System.out.println("Something went wrong with the sound = UnsupportedAudioFileException");
+            System.out.println("playSound() threw UnsupportedAudioFileException");
         } catch (IOException e3) {
-            System.out.println("Something went wrong with the sound = IOException");
+            System.out.println("playSound() threw IOException");
         }
     }
 
