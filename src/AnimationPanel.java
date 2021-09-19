@@ -24,15 +24,15 @@ import java.io.IOException;
 import javax.sound.sampled.*;
 import javax.swing.*;
 
-public class AnimationFrame extends ModeFrame {
+public class AnimationPanel extends ModePanel {
 
 
     private final ImageIcon startIcon;
     private final JButton startButton;
 
 
-    public AnimationFrame(Grid grid){
-        super(grid);
+    public AnimationPanel(Grid grid, String panelName){
+        super(grid, panelName);
 
         startIcon = new ImageIcon("images/icon_start_30.png");
 
@@ -126,16 +126,16 @@ public class AnimationFrame extends ModeFrame {
     }
 
     /**
-     * Initialises a MainFrame object
+     * Creates an AnimationFrame object
      */
-    public static void initialise(){
-        AnimationFrame af = new AnimationFrame(new Grid(500, 500, 45, 45));
-        af.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        af.setTitle("PathVisualiser AnimationMode");
-        af.setVisible(true);
+    public static AnimationPanel initialise(){
+        return new AnimationPanel(new Grid(500, 500, 45, 45), "Animation Panel");
+//        af.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        af.setTitle("PathVisualiser AnimationMode");
+//        animationPanel.setVisible(true);
     }
 
     public static void main(String[] args){
-        AnimationFrame.initialise();
+        AnimationPanel.initialise();
     }
 }

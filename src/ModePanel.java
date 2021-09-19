@@ -25,10 +25,11 @@ import java.io.IOException;
 import javax.sound.sampled.*;
 import javax.swing.*;
 
-public class ModeFrame extends JFrame implements ActionListener {
+public class ModePanel extends JPanel implements ActionListener {
 
     protected Grid grid;
     protected AlgorithmThread algorithmThread;
+    protected String panelName;
 
     protected final ImageIcon clearAllIcon;
     protected final ImageIcon clearExploredIcon;
@@ -42,9 +43,10 @@ public class ModeFrame extends JFrame implements ActionListener {
     protected final JComboBox algorithmMenu;
     protected final JLabel algorithmMenuLabel;
 
-    public ModeFrame(Grid grid) {
+    public ModePanel(Grid grid, String panelName) {
 
         this.grid = grid;
+        this.panelName = panelName;
 
         clearAllIcon = new ImageIcon("images/icon_clearAll_30.png");
         clearExploredIcon = new ImageIcon("images/icon_clearExplored_30.png");
@@ -87,8 +89,8 @@ public class ModeFrame extends JFrame implements ActionListener {
         container.add(controlPanel, BorderLayout.NORTH);
 
         this.add(container);
-        this.setResizable(false);
-        this.pack();
+//        this.setResizable(false);
+//        this.pack();
     }
 
     /**
@@ -149,5 +151,13 @@ public class ModeFrame extends JFrame implements ActionListener {
         } catch (IOException e3) {
             System.out.println("Something went wrong with the sound = IOException");
         }
+    }
+
+    public String getPanelName() {
+        return panelName;
+    }
+
+    public void setPanelName(String panelName) {
+        this.panelName = panelName;
     }
 }

@@ -2,11 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class InstantFrame extends ModeFrame{
+public class InstantPanel extends ModePanel{
 
 
-    public InstantFrame(InstantGrid grid){
-        super(grid);
+
+    public InstantPanel(InstantGrid grid, String panelName){
+        super(grid, panelName);
         algorithmMenu.addActionListener(this);
         grid.startAlgorithmThread();
 
@@ -55,15 +56,18 @@ public class InstantFrame extends ModeFrame{
 
     }
 
-    public static void initialise(){
-        InstantFrame instantFrame = new InstantFrame(new InstantGrid(500, 500, 45, 45));
-        instantFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        instantFrame.setTitle("PathVisualiser InstantMode");
-        instantFrame.setVisible(true);
+    /**
+     * Creates an InstantPanel object
+     */
+    public static InstantPanel initialise(){
+         return new InstantPanel(new InstantGrid(500, 500, 45, 45), "Instant Panel");
+//        instantFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        instantFrame.setTitle("PathVisualiser InstantMode");
+//        instantFrame.setVisible(true);
     }
 
     public static void main(String[] args){
-        InstantFrame.initialise();
+        InstantPanel.initialise();
     }
 
 }
