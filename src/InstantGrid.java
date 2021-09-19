@@ -35,7 +35,7 @@ public class InstantGrid extends Grid {
             protected Void doInBackground() {
                 InstantGrid instantGrid = InstantGrid.this;
                 instantGrid.createEdges();
-                instantGrid.setAlgorithmThread(new InstantAlgorithmThread(instantGrid, getChosenAlgorithm()));
+                instantGrid.setAlgorithmThread(new InstantAlgorithmThread(instantGrid, getChosenAlgorithm(), 0));
                 instantGrid.start();
 
                 return null;

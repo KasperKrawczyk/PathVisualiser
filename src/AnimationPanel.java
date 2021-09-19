@@ -62,7 +62,7 @@ public class AnimationPanel extends ModePanel {
             SwingWorker swingWorker = new SwingWorker<Void, Void>() {
                 protected Void doInBackground() {
                     grid.createEdges();
-                    algorithmThread = new AlgorithmThread(grid, algorithmMenu.getSelectedIndex());
+                    algorithmThread = new AlgorithmThread(grid, algorithmMenu.getSelectedIndex(), 25);
                     grid.setAlgorithmThread(algorithmThread);
                     grid.start();
 

@@ -1,18 +1,18 @@
 /**
  * Copyright © 2021 Kasper Krawczyk
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- *
+ * <p>
  * Icons by Icons8 (https://icons8.com)
  */
 
@@ -35,8 +35,6 @@ public class Cell implements Comparable<Cell> {
     private ArrayList<Edge> edgesFourDir;
 
 
-
-
     public Cell(Point position, int width, int height) {
         this.width = width;
         this.height = height;
@@ -47,7 +45,7 @@ public class Cell implements Comparable<Cell> {
         this.edgesFourDir = new ArrayList<>();
     }
 
-    public void draw(Graphics graphics){
+    public void draw(Graphics graphics) {
         graphics.setColor(this.cellType.color);
         graphics.fill3DRect(
                 this.position.x,
@@ -66,11 +64,11 @@ public class Cell implements Comparable<Cell> {
 
     }
 
-    public void addEdgeEightDir(Edge edge){
+    public void addEdgeEightDir(Edge edge) {
         edgesEightDir.add(edge);
     }
 
-    public void addEdgeFourDir(Edge edge){
+    public void addEdgeFourDir(Edge edge) {
         edgesFourDir.add(edge);
     }
 
@@ -97,7 +95,7 @@ public class Cell implements Comparable<Cell> {
     public void setCellType(CellType cellType) {
         CellType oldCellType = this.cellType;
         this.cellType = cellType;
-        if(cellType == CellType.SWAMP) setSwamp(true);
+        if (cellType == CellType.SWAMP) setSwamp(true);
         setCellTypeUtil(oldCellType);
     }
 
@@ -105,13 +103,16 @@ public class Cell implements Comparable<Cell> {
      * Determines if this cell should be saved as Swamp when recreating the grid after a search or when painting
      * @param oldCellType previous CellType of this cell
      */
-    private void setCellTypeUtil(CellType oldCellType){
-        if(oldCellType == CellType.SWAMP &&
-                (getCellType() == CellType.EXPLORED || getCellType() == CellType.TO_EXPLORE)) {
+    private void setCellTypeUtil(CellType oldCellType) {
+        if (oldCellType == CellType.SWAMP &&
+                (getCellType() == CellType.EXPLORED ||
+                        getCellType() == CellType.TO_EXPLORE ||
+                        getCellType() == CellType.EXPLORED_SWAMP ||
+                        getCellType() == CellType.SWAMP_TO_EXPLORE)) {
             setSwamp(true);
-        } else if(oldCellType == CellType.SWAMP
+        } else if (oldCellType == CellType.SWAMP
                 || getCellType() == CellType.REGULAR
-                || getCellType() == CellType.WALL){
+                || getCellType() == CellType.WALL) {
             setSwamp(false);
         }
     }
@@ -191,7 +192,7 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Cell " + position.getX() + ", " + position.getY() + ", " + this.getCellType();
     }
 }

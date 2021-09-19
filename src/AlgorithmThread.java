@@ -1,18 +1,18 @@
 /**
  * Copyright © 2021 Kasper Krawczyk
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- *
+ * <p>
  * Icons by Icons8 (https://icons8.com)
  */
 
@@ -26,6 +26,7 @@ public class AlgorithmThread extends Thread {
     public static final int BFS = 2;
 
     int chosenAlgorithm;
+    int sleepTimeInMillis;
 
     protected final Set<Cell> visitedCellsSet;
     protected PriorityQueue<Cell> priorityQueue;
@@ -41,13 +42,14 @@ public class AlgorithmThread extends Thread {
 
     /**
      * Constructs the search algorithm thread with all necessary data structures.
-     * @param grid The grid object for the search to be performed on
+     *
+     * @param grid            The grid object for the search to be performed on
      * @param chosenAlgorithm int indicating what algorithm to perform (0 == DIJKSTRA, 1 == A_STAR, 2 == BFS)
      */
-    public AlgorithmThread(Grid grid, int chosenAlgorithm){
-        System.out.println("AlgorithmThread created");
+    public AlgorithmThread(Grid grid, int chosenAlgorithm, int sleepTimeInMillis) {
         this.chosenAlgorithm = chosenAlgorithm;
-        if(chosenAlgorithm == BFS){
+        this.sleepTimeInMillis = sleepTimeInMillis;
+        if (chosenAlgorithm == BFS) {
             this.queue = new LinkedList<>();
         } else {
             this.priorityQueue = new PriorityQueue<>();
@@ -59,30 +61,31 @@ public class AlgorithmThread extends Thread {
 
     }
 
-    public void run(){
-        if(this.chosenAlgorithm == BFS){
-            do{
+    public void run() {
+        if (this.chosenAlgorithm == BFS) {
+            do {
                 findGoalBFS(this.grid.getStartCell(), this.grid.getGoalCell());
-            }while(!isThreadStopped());
+            } while (!isThreadStopped());
         } else {
-            do{
+            do {
                 findPath(this.grid.getStartCell(), this.grid.getGoalCell(), chosenAlgorithm);
-            }while(!isThreadStopped());
+            } while (!isThreadStopped());
         }
     }
 
     /**
      * Attempts to find the goalCell object with the Breadth First Search algorithm.
+     *
      * @param startCell Cell object, start of the search
-     * @param goalCell Cell object, goal of the search
+     * @param goalCell  Cell object, goal of the search
      */
-    public void findGoalBFS(Cell startCell, Cell goalCell){
+    public void findGoalBFS(Cell startCell, Cell goalCell) {
         queue.add(startCell);
         visitedCellsSet.add(startCell);
 
-        while(!queue.isEmpty() && !isThreadStopped()){
+        while (!queue.isEmpty() && !isThreadStopped()) {
             try {
-                Thread.sleep(25);
+                Thread.sleep(getSleepTimeInMillis());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -93,16 +96,16 @@ public class AlgorithmThread extends Thread {
 
             curCell.setCellType(CellType.EXPLORED);
 
-            if(curCell == startCell){
+            if (curCell == startCell) {
                 startCell.setCellType(CellType.START);
             }
-            if(curCell == goalCell){
+            if (curCell == goalCell) {
                 goalCell.setCellType(CellType.GOAL);
                 this.grid.update();
                 break;
             }
 
-            for(Edge edge : curCell.getEdgesFourDir()){
+            for (Edge edge : curCell.getEdgesFourDir()) {
                 this.processNeighbourBFS(edge);
             }
             //queue.remove(curCell);
@@ -114,23 +117,24 @@ public class AlgorithmThread extends Thread {
 
     /**
      * Finds the shortest path for the Dijkstra and A* algorithms.
+     *
      * @param startCell Cell object, start of the search
-     * @param goalCell Cell object, goal of the search
+     * @param goalCell  Cell object, goal of the search
      * @param algorithm int indicating the algorithm (0 == DIJKSTRA, 1 == A_STAR)
      */
-    public void findPath(Cell startCell, Cell goalCell, int algorithm){
+    public void findPath(Cell startCell, Cell goalCell, int algorithm) {
         startCell.setDistanceFromStart(0.0);
-        if(algorithm == DIJKSTRA) {
+        if (algorithm == DIJKSTRA) {
             startCell.setCost(0.0);
-        } else if (algorithm == A_STAR){
+        } else if (algorithm == A_STAR) {
             startCell.setCost(getHeuristic(startCell.getPosition(), goalCell.getPosition()));
         }
 
         priorityQueue.add(startCell);
 
-        while(!priorityQueue.isEmpty() && !isThreadStopped()){
+        while (!priorityQueue.isEmpty() && !isThreadStopped()) {
             try {
-                Thread.sleep(25);
+                Thread.sleep(getSleepTimeInMillis());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -139,21 +143,21 @@ public class AlgorithmThread extends Thread {
             Cell curCell = priorityQueue.poll();
             this.visitedCellsSet.add(curCell);
 
-            curCell.setCellType(CellType.EXPLORED);
+            colourExplored(curCell);
 
-            if(curCell == startCell){
+            if (curCell == startCell) {
                 startCell.setCellType(CellType.START);
             }
-            if(curCell == goalCell){
+            if (curCell == goalCell) {
                 goalCell.setCellType(CellType.GOAL);
                 this.grid.update();
                 break;
             }
 
-            for(Edge edge : curCell.getEdgesEightDir()){
-                if(algorithm == DIJKSTRA){
+            for (Edge edge : curCell.getEdgesEightDir()) {
+                if (algorithm == DIJKSTRA) {
                     this.processNeighbourDijkstra(curCell, edge);
-                } else if(algorithm == A_STAR){
+                } else if (algorithm == A_STAR) {
                     this.processNeighbourAStar(curCell, edge);
                 }
             }
@@ -170,36 +174,52 @@ public class AlgorithmThread extends Thread {
         this.setThreadStopped(true);
     }
 
+    protected void colourExplored(Cell curCell) {
+        if (curCell.isSwamp()) {
+            curCell.setCellType(CellType.EXPLORED_SWAMP);
+        } else if (!curCell.isSwamp()) {
+            curCell.setCellType(CellType.EXPLORED);
+        }
+    }
+
+
     /**
      * Calculates the Manhattan distance between two points
-     * @param source Point object
+     *
+     * @param source      Point object
      * @param destination Point object
      * @return double, Manhattan distance between two points
      */
-    protected double getHeuristic(Point source, Point destination){
+    protected double getHeuristic(Point source, Point destination) {
         return Math.abs(source.getX() - destination.getX()) + Math.abs(source.getY() - destination.getY());
     }
 
     /**
      * Processes a neighbour cell of curCell for the Dijkstra algorithm (8-directional, 8 edges)
+     *
      * @param curCell current cell
-     * @param edge currently processed edge
+     * @param edge    currently processed edge
      */
-    protected void processNeighbourDijkstra(Cell curCell, Edge edge){
+    protected void processNeighbourDijkstra(Cell curCell, Edge edge) {
         Cell neighbourCell = edge.getDestination();
-        if(neighbourCell.getCellType() == CellType.WALL){
+        if (neighbourCell.getCellType() == CellType.WALL) {
             return;
         }
 
         double distanceFromStartCell = curCell.getDistanceFromStart() + edge.getCost();
 
-        if(neighbourCell.getCellType() != CellType.EXPLORED
-                && neighbourCell.getCellType() != CellType.START
-                && neighbourCell.getCellType() != CellType.GOAL){
-            neighbourCell.setCellType(CellType.TO_EXPLORE);
+        if (neighbourCell.getCellType() != CellType.EXPLORED &&
+                neighbourCell.getCellType() != CellType.START &&
+                neighbourCell.getCellType() != CellType.GOAL &&
+                neighbourCell.getCellType() != CellType.EXPLORED_SWAMP) {
+            if (neighbourCell.isSwamp()) {
+                neighbourCell.setCellType(CellType.SWAMP_TO_EXPLORE);
+            } else {
+                neighbourCell.setCellType(CellType.TO_EXPLORE);
+            }
         }
 
-        if(distanceFromStartCell < neighbourCell.getDistanceFromStart()){
+        if (distanceFromStartCell < neighbourCell.getDistanceFromStart()) {
             priorityQueue.remove(neighbourCell);
             neighbourCell.setDistanceFromStart(distanceFromStartCell);
             neighbourCell.setCost(distanceFromStartCell);
@@ -210,8 +230,9 @@ public class AlgorithmThread extends Thread {
 
     /**
      * Processes a neighbour cell of curCell for the A* algorithm (8-directional, 8 edges)
+     *
      * @param curCell current cell
-     * @param edge currently processed edge
+     * @param edge    currently processed edge
      */
     protected void processNeighbourAStar(Cell curCell, Edge edge) {
         Cell neighbourCell = edge.getDestination();
@@ -223,9 +244,15 @@ public class AlgorithmThread extends Thread {
         double goalDist = getHeuristic(neighbourCell.getPosition(), this.goalCell.getPosition());
         double approxCost = startDist + goalDist;
 
-        if (neighbourCell.getCellType() != CellType.EXPLORED
-                && neighbourCell.getCellType() != CellType.START) {
-            neighbourCell.setCellType(CellType.TO_EXPLORE);
+        if (neighbourCell.getCellType() != CellType.EXPLORED &&
+                neighbourCell.getCellType() != CellType.START &&
+                neighbourCell.getCellType() != CellType.GOAL &&
+                neighbourCell.getCellType() != CellType.EXPLORED_SWAMP) {
+            if (neighbourCell.isSwamp()) {
+                neighbourCell.setCellType(CellType.SWAMP_TO_EXPLORE);
+            } else {
+                neighbourCell.setCellType(CellType.TO_EXPLORE);
+            }
         }
 
 
@@ -248,36 +275,43 @@ public class AlgorithmThread extends Thread {
 
     /**
      * Processes a neighbour cell of curCell for the Breadth First Search algorithm (4-directional, 4 edges)
+     *
      * @param edge currently processed edge
      */
-    protected void processNeighbourBFS(Edge edge){
+    protected void processNeighbourBFS(Edge edge) {
         Cell neighbourCell = edge.getDestination();
-        if(neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)){
+        if (neighbourCell.getCellType() == CellType.WALL || visitedCellsSet.contains(neighbourCell)) {
             return;
         }
 
-        if(neighbourCell.getCellType() != CellType.EXPLORED
-                && neighbourCell.getCellType() != CellType.START
-                && neighbourCell.getCellType() != CellType.GOAL){
-            neighbourCell.setCellType(CellType.TO_EXPLORE);
+        if (neighbourCell.getCellType() != CellType.EXPLORED &&
+                neighbourCell.getCellType() != CellType.START &&
+                neighbourCell.getCellType() != CellType.GOAL &&
+                neighbourCell.getCellType() != CellType.EXPLORED_SWAMP) {
+            if (neighbourCell.isSwamp()) {
+                neighbourCell.setCellType(CellType.SWAMP_TO_EXPLORE);
+            } else {
+                neighbourCell.setCellType(CellType.TO_EXPLORE);
+            }
         }
 
 
-            queue.add(neighbourCell);
-            visitedCellsSet.add(neighbourCell);
+        queue.add(neighbourCell);
+        visitedCellsSet.add(neighbourCell);
     }
 
     /**
      * Iterates over the linked list of getPrev() of every cell in the path, and adds them to the path ArrayList
+     *
      * @param goalCell the end cell of the path
      * @return ArrayList<Cell> constituting the path
      */
-    protected ArrayList<Cell> buildPath(Cell goalCell){
+    protected ArrayList<Cell> buildPath(Cell goalCell) {
         ArrayList<Cell> path = new ArrayList<>();
         Cell curCell = goalCell;
         path.add(curCell);
 
-        while(curCell.getPrev() != null){
+        while (curCell.getPrev() != null) {
             path.add(curCell.getPrev());
             curCell = curCell.getPrev();
         }
@@ -287,18 +321,19 @@ public class AlgorithmThread extends Thread {
     /**
      * Iterates over an ArrayList<Cell> of cells constituting the reversed path (Start -> Goal)
      * Setting each cell (but for Start and Goal) as CellType.PATH, and updating the grid with each iteration
+     *
      * @param path
      * @param startCell
      * @param goalCell
      */
-    protected void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell){
-        for(Cell cell : path){
+    protected void animatePath(ArrayList<Cell> path, Cell startCell, Cell goalCell) {
+        for (Cell cell : path) {
             try {
-                Thread.sleep(25);
+                Thread.sleep(getSleepTimeInMillis());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(cell != startCell && cell != goalCell){
+            if (cell != startCell && cell != goalCell) {
                 cell.setCellType(CellType.PATH);
                 this.grid.update();
             }
@@ -311,6 +346,14 @@ public class AlgorithmThread extends Thread {
 
     public void setChosenAlgorithm(int chosenAlgorithm) {
         this.chosenAlgorithm = chosenAlgorithm;
+    }
+
+    public int getSleepTimeInMillis() {
+        return sleepTimeInMillis;
+    }
+
+    public void setSleepTimeInMillis(int sleepTimeInMillis) {
+        this.sleepTimeInMillis = sleepTimeInMillis;
     }
 
     public boolean isStartChosen() {
