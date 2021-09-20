@@ -14,20 +14,25 @@
  * the License.
  * <p>
  * Icons by Icons8 (https://icons8.com)
+ * Sounds by zapsplat (https://zapsplat.com)
  */
 
 import java.awt.*;
 
 public enum CellType {
 
-    REGULAR(new Color(218, 200, 140)),
     START(new Color(40, 45, 148)),
     GOAL(new Color(232, 57, 41)),
+
+    REGULAR(new Color(218, 200, 140)),
+
     EXPLORED(new Color(144, 189, 144)),
     TO_EXPLORE(new Color(86, 229, 109)),
+
     PATH(new Color(250, 100, 36)),
-    WALL(new Color(15, 15, 15)),
-    SWAMP(new Color(61, 26, 26)),
+    WALL(new Color(63, 62, 62)),
+
+    SWAMP(new Color(39, 61, 26)),
     SWAMP_TO_EXPLORE(new Color(66, 98, 54)),
     EXPLORED_SWAMP(new Color(89, 71, 71));
 

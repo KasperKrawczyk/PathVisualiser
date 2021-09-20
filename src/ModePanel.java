@@ -14,7 +14,7 @@
  * the License.
  * <p>
  * Icons by Icons8 (https://icons8.com)
- * Sounds by Blizzard
+ * Sounds by zapsplat (https://zapsplat.com)
  */
 
 import java.awt.*;
@@ -49,10 +49,10 @@ public class ModePanel extends JPanel implements ActionListener {
         this.grid = grid;
         this.panelName = panelName;
 
-        clearAllIcon = new ImageIcon(getClass()
+        clearAllIcon = new ImageIcon(this.getClass()
                 .getClassLoader()
                 .getResource("icon_clearAll_30.png"), "Clear All");
-        clearExploredIcon = new ImageIcon(getClass()
+        clearExploredIcon = new ImageIcon(this.getClass()
                 .getClassLoader()
                 .getResource("icon_clearExplored_30.png"), "Clear Explored");
 
@@ -99,7 +99,7 @@ public class ModePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Listens to the buttons firing off
+     * Listens to the actionEvents from the buttons
      *
      * @param actionEvent
      */
@@ -139,7 +139,7 @@ public class ModePanel extends JPanel implements ActionListener {
             switch (source) {
                 case "clearExplored":
                 case "clearAll":
-                    URL buttonClickURL = getClass().getClassLoader().getResource("button_click.wav");
+                    URL buttonClickURL = this.getClass().getClassLoader().getResource("button_click.wav");
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(buttonClickURL);
                     Clip clip = AudioSystem.getClip();
                     clip.open(audioInputStream);

@@ -14,7 +14,7 @@
  * the License.
  * <p>
  * Icons by Icons8 (https://icons8.com)
- * Sounds by Blizzard
+ * Sounds by zapsplat (https://zapsplat.com)
  */
 
 import java.awt.event.*;
@@ -36,8 +36,7 @@ public class AnimationPanel extends ModePanel {
     public AnimationPanel(Grid grid, String panelName) {
         super(grid, panelName);
 
-        //startIcon = new ImageIcon("icon_start_30.png", "Start");
-        startIcon = new ImageIcon(getClass()
+        startIcon = new ImageIcon(this.getClass()
                 .getClassLoader()
                 .getResource("icon_start_30.png"), "Start");
 
@@ -52,7 +51,7 @@ public class AnimationPanel extends ModePanel {
     }
 
     /**
-     * Listens to the buttons firing off
+     * Listens to the actionEvents from the buttons
      *
      * @param actionEvent
      */
@@ -103,6 +102,11 @@ public class AnimationPanel extends ModePanel {
 
     }
 
+    /**
+     * Plays sound on an action event
+     *
+     * @param actionEvent
+     */
     protected void playSound(ActionEvent actionEvent) {
         String source = actionEvent.getActionCommand();
         System.out.println("source = " + source);
@@ -111,7 +115,9 @@ public class AnimationPanel extends ModePanel {
                 case "run":
                 case "clearExplored":
                 case "clearAll":
-                    URL buttonClickURL = getClass().getClassLoader().getResource("button_click.wav");
+                    URL buttonClickURL = this.getClass()
+                            .getClassLoader()
+                            .getResource("button_click.wav");
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(buttonClickURL);
                     Clip clip = AudioSystem.getClip();
                     clip.open(audioInputStream);
@@ -133,11 +139,8 @@ public class AnimationPanel extends ModePanel {
     /**
      * Creates an AnimationFrame object
      */
-    public static AnimationPanel initialise() {
+    public static ModePanel initialise() {
         return new AnimationPanel(new Grid(500, 500, 45, 45), "Animation Panel");
-//        af.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        af.setTitle("PathVisualiser AnimationMode");
-//        animationPanel.setVisible(true);
     }
 
     public static void main(String[] args) {

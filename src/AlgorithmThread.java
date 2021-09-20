@@ -14,6 +14,7 @@
  * the License.
  * <p>
  * Icons by Icons8 (https://icons8.com)
+ * Sounds by zapsplat (https://zapsplat.com)
  */
 
 import java.awt.*;
