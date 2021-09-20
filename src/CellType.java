@@ -38,6 +38,11 @@ public enum CellType {
 
     public final Color color;
 
+    /**
+     * Creates a CellType enum object with its Color object
+     *
+     * @param color Color object
+     */
     CellType(Color color) {
         this.color = color;
     }

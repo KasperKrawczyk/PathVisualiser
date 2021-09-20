@@ -44,6 +44,12 @@ public class ModePanel extends JPanel implements ActionListener {
     protected final JComboBox algorithmMenu;
     protected final JLabel algorithmMenuLabel;
 
+    /**
+     * Creates a ModePanel object
+     *
+     * @param grid      Grid object to draw on
+     * @param panelName the name of this panel to be displayed
+     */
     public ModePanel(Grid grid, String panelName) {
 
         this.grid = grid;
@@ -94,8 +100,7 @@ public class ModePanel extends JPanel implements ActionListener {
         container.add(controlPanel, BorderLayout.NORTH);
 
         this.add(container);
-//        this.setResizable(false);
-//        this.pack();
+
     }
 
     /**
@@ -132,9 +137,13 @@ public class ModePanel extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Plays sound on an action event
+     *
+     * @param actionEvent the ActionEvent object that triggers the sound
+     */
     protected void playSound(ActionEvent actionEvent) {
         String source = actionEvent.getActionCommand();
-        System.out.println("source = " + source);
         try {
             switch (source) {
                 case "clearExplored":

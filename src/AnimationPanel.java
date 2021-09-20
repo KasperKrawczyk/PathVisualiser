@@ -32,7 +32,12 @@ public class AnimationPanel extends ModePanel {
     private final ImageIcon startIcon;
     private final JButton startButton;
 
-
+    /**
+     * Creates an AnimationPanel object
+     *
+     * @param grid      Grid object to draw on
+     * @param panelName the name of this panel to be displayed
+     */
     public AnimationPanel(Grid grid, String panelName) {
         super(grid, panelName);
 
@@ -141,9 +146,5 @@ public class AnimationPanel extends ModePanel {
      */
     public static ModePanel initialise() {
         return new AnimationPanel(new Grid(500, 500, 45, 45), "Animation Panel");
-    }
-
-    public static void main(String[] args) {
-        AnimationPanel.initialise();
     }
 }

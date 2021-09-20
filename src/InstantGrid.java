@@ -22,15 +22,26 @@ import java.awt.event.*;
 
 public class InstantGrid extends Grid {
 
-    int chosenAlgorithm;
+    private int chosenAlgorithm;
 
-
+    /**
+     * Creates an InstantGrid object with call to Grid()
+     * Initialises the InstantGrid's InstantAlgorithmThread object
+     *
+     * @param height  int with height of the Grid
+     * @param width   int with width of the Grid
+     * @param numRows number of rows
+     * @param numCols number of columns
+     */
     public InstantGrid(int height, int width, int numRows, int numCols) {
         super(height, width, numRows, numCols);
         startAlgorithmThread();
     }
 
 
+    /**
+     * Creates this Grid's edges (for every Cell) and starts its InstantAlgorithmThread
+     */
     public void startAlgorithmThread() {
         SwingWorker swingWorker = new SwingWorker<Void, Void>() {
             protected Void doInBackground() {
@@ -45,11 +56,11 @@ public class InstantGrid extends Grid {
         swingWorker.run();
     }
 
-    public void setAlgorithmThread(InstantAlgorithmThread instantAlgorithmThread) {
-        this.algorithmThread = instantAlgorithmThread;
-    }
-
-
+    /**
+     * A utility method for mouseReleased
+     *
+     * @param mouseEvent MouseEvent object
+     */
     @Override
     protected void mouseWasClicked(MouseEvent mouseEvent) {
         int x = (int) getMousePosition().getX();
@@ -76,33 +87,19 @@ public class InstantGrid extends Grid {
         update();
     }
 
+    /**
+     * A utility method for mousePressed
+     *
+     * @param mouseEvent MouseEvent object
+     */
     @Override
     protected void mouseWasPressed(MouseEvent mouseEvent) {
-        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+        if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3 ||
+                mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
 
             SwingWorker swingWorker = new SwingWorker<Void, Void>() {
                 protected Void doInBackground() {
                     clearExploredAfterRun();
-
-                    Grid grid = InstantGrid.this;
-                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
-                    painterThread.setThreadStopped(false);
-
-                    painterThread.start();
-
-                    return null;
-                }
-            };
-
-            swingWorker.run();
-
-
-        } else if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
-
-            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
-                protected Void doInBackground() {
-                    clearExploredAfterRun();
-
                     Grid grid = InstantGrid.this;
                     painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
                     painterThread.setThreadStopped(false);
@@ -115,11 +112,16 @@ public class InstantGrid extends Grid {
         }
     }
 
+    /**
+     * A utility method for mouseReleased
+     *
+     * @param mouseEvent MouseEvent object which prompts action
+     */
+    @Override
     protected void mouseWasReleased(MouseEvent mouseEvent) {
         if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
             this.painterThread.setThreadStopped(true);
             this.painterThread = null;
-            System.out.println("RELEASED");
             isPainting = !isPainting;
             this.startAlgorithmThread();
         }
@@ -127,10 +129,13 @@ public class InstantGrid extends Grid {
         if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
             this.painterThread.setThreadStopped(true);
             this.painterThread = null;
-            System.out.println("RELEASED");
             isPainting = !isPainting;
             this.startAlgorithmThread();
         }
+    }
+
+    public void setAlgorithmThread(InstantAlgorithmThread instantAlgorithmThread) {
+        this.algorithmThread = instantAlgorithmThread;
     }
 
     public int getChosenAlgorithm() {

@@ -26,6 +26,13 @@ public class Grid extends JPanel implements MouseListener {
 
     public static double SWAMP_WEIGHT_PENALTY = 4.5;
 
+    protected Cell[][] grid;
+    protected Cell startCell;
+    protected Cell goalCell;
+
+    protected AlgorithmThread algorithmThread;
+    protected PainterThread painterThread;
+
     protected int width;
     protected int height;
 
@@ -35,15 +42,18 @@ public class Grid extends JPanel implements MouseListener {
     protected int numRows;
     protected int numCols;
 
-    protected boolean isPainting = true;
+    protected boolean isPainting;
 
-    protected Cell[][] grid;
-    protected Cell startCell;
-    protected Cell goalCell;
 
-    protected AlgorithmThread algorithmThread;
-    protected PainterThread painterThread;
-
+    /**
+     * Creates a Grid object with its width, height, the number of rows and the number of columns
+     * Populates the grid with cells via createGrid()
+     *
+     * @param height  int with height of the Grid
+     * @param width   int with width of the Grid
+     * @param numRows number of rows
+     * @param numCols number of columns
+     */
     public Grid(int height, int width, int numRows, int numCols) {
         this.width = width;
         this.height = height;
@@ -53,6 +63,7 @@ public class Grid extends JPanel implements MouseListener {
         this.cellHeight = height / numRows;
         this.cellWidth = width / numCols;
 
+        this.isPainting = true;
 
         createGrid();
         addMouseListener(this);
@@ -188,6 +199,9 @@ public class Grid extends JPanel implements MouseListener {
         }
     }
 
+    /**
+     * Repaints the object
+     */
     public void update() {
         this.repaint();
     }
@@ -224,6 +238,136 @@ public class Grid extends JPanel implements MouseListener {
             this.algorithmThread.setThreadStopped(true);
 
         }
+    }
+
+    /**
+     * Sets the Start or Goal cell object in the clicked cell
+     * ctrl + LMB for Start
+     * alt + RMB for Goal
+     *
+     * @param mouseEvent
+     */
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        System.out.println("mouseClicked() in Grid");
+        mouseWasClicked(mouseEvent);
+    }
+
+    protected void mouseWasClicked(MouseEvent mouseEvent) {
+        int x = (int) getMousePosition().getX();
+        int y = (int) getMousePosition().getY();
+        Cell curCell = grid[x / getCellWidth()][y / getCellHeight()];
+
+        if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+            System.out.println("mouseWasClicked() in Grid");
+            startCell.setCellType(CellType.REGULAR);
+            startCell = grid[x / cellWidth][y / cellHeight];
+            curCell.setCellType(CellType.START);
+
+        }
+        if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            System.out.println("mouseWasClicked() in Grid");
+            goalCell.setCellType(CellType.REGULAR);
+            goalCell = grid[x / cellWidth][y / cellHeight];
+            curCell.setCellType(CellType.GOAL);
+
+        }
+
+        update();
+    }
+
+    private void setIsMousePressed(boolean isMousePressed) {
+
+    }
+
+
+    /**
+     * Creates and runs the painterThread object, with the isPainting flag passed
+     * (true for setting walls / swamps, false for clearing them)
+     *
+     * @param mouseEvent MouseEvent object
+     */
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        this.mouseWasPressed(mouseEvent);
+    }
+
+    /**
+     * A utility method for mousePressed
+     *
+     * @param mouseEvent MouseEvent object
+     */
+    protected void mouseWasPressed(MouseEvent mouseEvent) {
+        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+
+            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
+                protected Void doInBackground() {
+                    Grid grid = Grid.this;
+                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
+                    painterThread.setThreadStopped(false);
+                    painterThread.start();
+
+                    return null;
+                }
+            };
+            swingWorker.run();
+            System.out.println("PRESSED");
+        } else if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
+
+            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
+                protected Void doInBackground() {
+                    Grid grid = Grid.this;
+                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
+                    painterThread.setThreadStopped(false);
+                    painterThread.start();
+
+                    return null;
+                }
+            };
+            swingWorker.run();
+            System.out.println("PRESSED");
+        }
+    }
+
+    /**
+     * Stops the currently running painterThread, and sets the isPainting flag to its opposite
+     * for the next painterThread to be called to do the opposite (if the current one is setting
+     * walls / swamps, it's successor will clear them)
+     *
+     * @param mouseEvent MouseEvent object which prompts action
+     */
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+        this.mouseWasReleased(mouseEvent);
+    }
+
+    /**
+     * A utility method for mouseReleased
+     *
+     * @param mouseEvent MouseEvent object which prompts action
+     */
+    protected void mouseWasReleased(MouseEvent mouseEvent) {
+        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
+            this.painterThread.setThreadStopped(true);
+            this.painterThread = null;
+            isPainting = !isPainting;
+        }
+
+        if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            this.painterThread.setThreadStopped(true);
+            this.painterThread = null;
+            isPainting = !isPainting;
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
     }
 
     public boolean isPainting() {
@@ -295,130 +439,6 @@ public class Grid extends JPanel implements MouseListener {
     }
 
     public void setAlgorithmThread(AlgorithmThread algorithmThread) {
-        System.out.println("setAlgorithmThread() in " + this.getClass() + " algorithmThread = " + algorithmThread.getClass());
         this.algorithmThread = algorithmThread;
-    }
-
-    /**
-     * Sets the Start or Goal cell object in the clicked cell
-     * ctrl + LMB for Start
-     * alt + RMB for Goal
-     *
-     * @param mouseEvent
-     */
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-        System.out.println("mouseClicked() in Grid");
-        mouseWasClicked(mouseEvent);
-    }
-
-    protected void mouseWasClicked(MouseEvent mouseEvent) {
-        int x = (int) getMousePosition().getX();
-        int y = (int) getMousePosition().getY();
-        Cell curCell = grid[x / getCellWidth()][y / getCellHeight()];
-
-        if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            System.out.println("mouseWasClicked() in Grid");
-            startCell.setCellType(CellType.REGULAR);
-            startCell = grid[x / cellWidth][y / cellHeight];
-            curCell.setCellType(CellType.START);
-
-        }
-        if (!mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
-            System.out.println("mouseWasClicked() in Grid");
-            goalCell.setCellType(CellType.REGULAR);
-            goalCell = grid[x / cellWidth][y / cellHeight];
-            curCell.setCellType(CellType.GOAL);
-
-        }
-
-        update();
-    }
-
-    private void setIsMousePressed(boolean isMousePressed) {
-
-    }
-
-
-    /**
-     * Creates and runs the painterThread object, with the isPainting flag passed
-     * (true for setting walls / swamps, false for clearing them)
-     *
-     * @param mouseEvent
-     */
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-        this.mouseWasPressed(mouseEvent);
-    }
-
-    protected void mouseWasPressed(MouseEvent mouseEvent) {
-        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
-
-            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
-                protected Void doInBackground() {
-                    Grid grid = Grid.this;
-                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
-                    painterThread.setThreadStopped(false);
-                    painterThread.start();
-
-                    return null;
-                }
-            };
-            swingWorker.run();
-            System.out.println("PRESSED");
-        } else if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
-
-            SwingWorker swingWorker = new SwingWorker<Void, Void>() {
-                protected Void doInBackground() {
-                    Grid grid = Grid.this;
-                    painterThread = new PainterThread(grid, grid.isPainting, mouseEvent);
-                    painterThread.setThreadStopped(false);
-                    painterThread.start();
-
-                    return null;
-                }
-            };
-            swingWorker.run();
-            System.out.println("PRESSED");
-        }
-    }
-
-
-    /**
-     * Stops the currently running painterThread, and sets the isPainting flag to its opposite
-     * for the next painterThread to be called to do the opposite (if the current one is setting
-     * walls / swamps, it's successor will clear them)
-     *
-     * @param mouseEvent
-     */
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-        this.mouseWasReleased(mouseEvent);
-    }
-
-    protected void mouseWasReleased(MouseEvent mouseEvent) {
-        if (mouseEvent.isControlDown() && mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            this.painterThread.setThreadStopped(true);
-            this.painterThread = null;
-            System.out.println("RELEASED");
-            isPainting = !isPainting;
-        }
-
-        if (mouseEvent.isAltDown() && mouseEvent.getButton() == MouseEvent.BUTTON3) {
-            this.painterThread.setThreadStopped(true);
-            this.painterThread = null;
-            System.out.println("RELEASED");
-            isPainting = !isPainting;
-        }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-
     }
 }

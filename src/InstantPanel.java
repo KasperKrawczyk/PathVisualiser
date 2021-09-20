@@ -21,7 +21,12 @@ import java.awt.event.ActionEvent;
 
 public class InstantPanel extends ModePanel {
 
-
+    /**
+     * Creates an InstantPanel object and its InstantGrid's InstantAlgorithmThread
+     *
+     * @param grid      Grid object to draw on
+     * @param panelName the name of this panel to be displayed
+     */
     public InstantPanel(InstantGrid grid, String panelName) {
         super(grid, panelName);
         algorithmMenu.addActionListener(this);
@@ -77,10 +82,6 @@ public class InstantPanel extends ModePanel {
      */
     public static ModePanel initialise() {
         return new InstantPanel(new InstantGrid(500, 500, 45, 45), "Instant Panel");
-    }
-
-    public static void main(String[] args) {
-        InstantPanel.initialise();
     }
 
 }

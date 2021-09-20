@@ -26,13 +26,11 @@ public class AlgorithmThread extends Thread {
     public static final int A_STAR = 1;
     public static final int BFS = 2;
 
-    int chosenAlgorithm;
-    int sleepTimeInMillis;
-
     protected final Set<Cell> visitedCellsSet;
+    protected final Grid grid;
+
     protected PriorityQueue<Cell> priorityQueue;
     protected Queue<Cell> queue;
-    protected final Grid grid;
 
     protected Cell startCell;
     protected Cell goalCell;
@@ -40,6 +38,9 @@ public class AlgorithmThread extends Thread {
     protected boolean isStartChosen = true;
     protected boolean isEndChosen = true;
     protected boolean isThreadStopped = true;
+
+    private int chosenAlgorithm;
+    private int sleepTimeInMillis;
 
     /**
      * Constructs the search algorithm thread with all necessary data structures.
@@ -62,6 +63,9 @@ public class AlgorithmThread extends Thread {
 
     }
 
+    /**
+     * Runs this thread with a given searching algorithm
+     */
     public void run() {
         if (this.chosenAlgorithm == BFS) {
             do {
@@ -175,6 +179,11 @@ public class AlgorithmThread extends Thread {
         this.setThreadStopped(true);
     }
 
+    /**
+     * Colours the cell dependent on whether it was marked as swamp
+     *
+     * @param curCell Currently processed cell
+     */
     protected void colourExplored(Cell curCell) {
         if (curCell.isSwamp()) {
             curCell.setCellType(CellType.EXPLORED_SWAMP);
@@ -394,7 +403,6 @@ public class AlgorithmThread extends Thread {
     }
 
     public void setThreadStopped(boolean isThreadStopped) {
-        System.out.println(this + " stopped? =" + isThreadStopped);
         this.isThreadStopped = isThreadStopped;
     }
 }

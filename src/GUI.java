@@ -24,9 +24,11 @@ public class GUI extends JFrame {
 
     private final JTabbedPane tabbedPane = new JTabbedPane();
 
+    /**
+     * Creates a GUI object
+     */
     public GUI() {
         setTitle("Interactive Path Visualiser");
-        setSize(1450, 1000);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         add(tabbedPane);
@@ -38,19 +40,29 @@ public class GUI extends JFrame {
 
     }
 
+    /**
+     * Adds a ModePanel object to this GUI
+     *
+     * @param modePanel a ModePanel object
+     */
     private void addModePanel(ModePanel modePanel) {
         JPanel tabPanel = new TabPanel(modePanel);
         tabPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         tabbedPane.addTab(modePanel.getPanelName(), tabPanel);
     }
 
+    /**
+     * A class to representing the contents of GUI's tabbed pane
+     */
     public static class TabPanel extends JPanel {
 
         private final JPanel tabPanel;
 
-
-        private static final long serialVersionUID = 1L;
-
+        /**
+         * Creates a tab pane for GUI
+         *
+         * @param modePanel ModePanel object
+         */
         public TabPanel(ModePanel modePanel) {
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 

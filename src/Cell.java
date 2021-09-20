@@ -30,12 +30,18 @@ public class Cell implements Comparable<Cell> {
     private double cost;
     private Cell prev;
     // used for saving the previous state of this cell's CellType in case
-    // it is changed to TO_EXPLORE or EXPLORED
+    // it is changed to TO_EXPLORE or EXPLORED / SWAMP_TO_EXPLORE or EXPLORED_SWAMP
     private boolean isSwamp = false;
     private ArrayList<Edge> edgesEightDir;
     private ArrayList<Edge> edgesFourDir;
 
-
+    /**
+     * Creates a Cell object with its position on the grid (Point object), width and height
+     *
+     * @param position Point object within the Grid that holds this Cell
+     * @param width    int with the width of the cell
+     * @param height   int with the height of the cell
+     */
     public Cell(Point position, int width, int height) {
         this.width = width;
         this.height = height;
@@ -46,6 +52,11 @@ public class Cell implements Comparable<Cell> {
         this.edgesFourDir = new ArrayList<>();
     }
 
+    /**
+     * Draws this Cell
+     *
+     * @param graphics Graphics object used in drawing of this component
+     */
     public void draw(Graphics graphics) {
         graphics.setColor(this.cellType.color);
         graphics.fill3DRect(
@@ -63,6 +74,29 @@ public class Cell implements Comparable<Cell> {
                 this.height
         );
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cell cell = (Cell) o;
+        return cellType.equals(cell.cellType) && position.equals(cell.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cellType, position);
+    }
+
+    @Override
+    public int compareTo(Cell otherCell) {
+        return Double.compare(this.cost, otherCell.cost);
+    }
+
+    @Override
+    public String toString() {
+        return "Cell " + position.getX() + ", " + position.getY() + ", " + this.getCellType();
     }
 
     public void addEdgeEightDir(Edge edge) {
@@ -93,6 +127,12 @@ public class Cell implements Comparable<Cell> {
         return cellType;
     }
 
+    /**
+     * Sets the cellType of this Cell
+     * If the cell was SWAMP, the isSwamp flag will be set
+     *
+     * @param cellType
+     */
     public void setCellType(CellType cellType) {
         CellType oldCellType = this.cellType;
         this.cellType = cellType;
@@ -173,28 +213,5 @@ public class Cell implements Comparable<Cell> {
 
     public void setEdgesFourDir(ArrayList<Edge> edgesFourDir) {
         this.edgesFourDir = edgesFourDir;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cell cell = (Cell) o;
-        return cellType.equals(cell.cellType) && position.equals(cell.position);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cellType, position);
-    }
-
-    @Override
-    public int compareTo(Cell otherCell) {
-        return Double.compare(this.cost, otherCell.cost);
-    }
-
-    @Override
-    public String toString() {
-        return "Cell " + position.getX() + ", " + position.getY() + ", " + this.getCellType();
     }
 }
