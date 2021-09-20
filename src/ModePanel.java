@@ -32,6 +32,7 @@ public class ModePanel extends JPanel implements ActionListener {
     protected AlgorithmThread algorithmThread;
     protected String panelName;
 
+    protected final JButton instructionButton;
     protected final ImageIcon clearAllIcon;
     protected final ImageIcon clearExploredIcon;
     protected final JPanel container;
@@ -89,10 +90,20 @@ public class ModePanel extends JPanel implements ActionListener {
         buttonPanel.add(clearAllButton);
         controlPanel.add(buttonPanel, BorderLayout.WEST);
 
-        menuPanel = new JPanel(new GridLayout(2, 1, 0, 5));
+
+        menuPanel = new JPanel(new GridLayout(3, 1, 0, 5));
         menuPanel.add(algorithmMenuLabel);
         menuPanel.add(algorithmMenu);
+        instructionButton = new JButton("Help");
+        instructionButton.addActionListener((ActionEvent ae) -> {
+            JDialog dialog = new JDialog();
+            dialog.add(new JLabel(help()));
+            dialog.setBounds(400, 400, 250, 250);
+            dialog.setVisible(true);
+        });
+        menuPanel.add(instructionButton);
         controlPanel.add(menuPanel, BorderLayout.WEST);
+
 
         controlPanel.setSize(new Dimension(400, 65));
 
@@ -101,6 +112,25 @@ public class ModePanel extends JPanel implements ActionListener {
 
         this.add(container);
 
+    }
+
+    /**
+     * Returns the text of the help dialog window
+     *
+     * @return String object with the help
+     */
+    private String help() {
+        return "<html>" +
+                "<style>" +
+                "h1 {text-align: center;}"
+                + "</style>"
+                + "<h1>Help</h1>"
+                + "<h2>Controls</h2>"
+                + "<p>LMB for setting Start</p>"
+                + "<p>RMB for setting Goal</p>"
+                + "<p>LMB + ctrl for painting / erasing walls</p>"
+                + "<p>RMB + alt for painting / erasing swamp</p>"
+                + "</html>";
     }
 
     /**

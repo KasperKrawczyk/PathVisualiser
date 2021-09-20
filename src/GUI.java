@@ -19,6 +19,7 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame {
 
@@ -30,14 +31,13 @@ public class GUI extends JFrame {
     public GUI() {
         setTitle("Interactive Path Visualiser");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        add(tabbedPane);
 
+        add(tabbedPane);
         addModePanel(InstantPanel.initialise());
         addModePanel(AnimationPanel.initialise());
-        this.pack();
-
-
+        pack();
+        //centres the JFrame object relative to the screen
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -46,35 +46,9 @@ public class GUI extends JFrame {
      * @param modePanel a ModePanel object
      */
     private void addModePanel(ModePanel modePanel) {
-        JPanel tabPanel = new TabPanel(modePanel);
-        tabPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        tabbedPane.addTab(modePanel.getPanelName(), tabPanel);
+        tabbedPane.addTab(modePanel.getPanelName(), modePanel);
     }
 
-    /**
-     * A class to representing the contents of GUI's tabbed pane
-     */
-    public static class TabPanel extends JPanel {
-
-        private final JPanel tabPanel;
-
-        /**
-         * Creates a tab pane for GUI
-         *
-         * @param modePanel ModePanel object
-         */
-        public TabPanel(ModePanel modePanel) {
-            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
-            JPanel contentPanel = new JPanel();
-            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
-            this.tabPanel = modePanel;
-            contentPanel.add(modePanel);
-            contentPanel.add(Box.createRigidArea(new Dimension(25, 25)));
-            add(Box.createRigidArea(new Dimension(10, 10)));
-            this.add(contentPanel);
-        }
-    }
 
     public static void main(String[] args) {
         GUI gui = new GUI();

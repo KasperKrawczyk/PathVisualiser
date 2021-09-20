@@ -66,11 +66,9 @@ public class InstantPanel extends ModePanel {
                 this.algorithmThread = null;
             }
             grid.clearExploredAfterRun();
-
-
             clearAllButton.setEnabled(true);
             clearExploredButton.setEnabled(true);
-            ((InstantGrid) grid).startAlgorithmThread();
+            //((InstantGrid) grid).startAlgorithmThread();
 
             playSound(actionEvent);
         }
