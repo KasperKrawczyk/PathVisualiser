@@ -1,7 +1,7 @@
  
  # Path Visualiser
 
-Simple Java program to visualise searching and path-finding algorithms
+A simple Java program to visualise searching and path-finding algorithms
 
 ## Description
 
@@ -24,6 +24,8 @@ The program allows the user to place and erase walls (```ctrl + LMB```) and swam
 ```
 java -jar PathVisualiserJava.jar
 ```
+
+or, alternatively, by executing PathVisualiser.jar
 
 ## Authors
 
