@@ -13,8 +13,8 @@ The program will attempt to find the shortest path from start (blue field) to go
 The program allows the user to place and erase walls (```ctrl + LMB```) and swamp (```alt + RMB```). The former prevents the program from searching in a walled area, the latter carries a penalty for swamp fields, which the algorithm adjusts the path-finding for.
 
 <p align="center">
-  <img src="animationPanel_with_Dijkstra.gif" alt="showcase animation panel gif" />
-  <img src="instantPanel_with_AStar.gif" alt="showcase instant panel gif" />
+<!--   <img src="animationPanel_with_Dijkstra.gif" alt="showcase animation panel gif" />
+  <img src="instantPanel_with_AStar.gif" alt="showcase instant panel gif" /> -->
  <img src="instantPanel_with_AStar.gif" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;">
  <img src="animationPanel_with_Dijkstra.gif" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;">
 </p>
