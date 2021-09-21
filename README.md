@@ -1,7 +1,7 @@
  
  # Path Visualiser
 
-Simple Java program to visualise searching and path-finding algorithms
+A simple Java program to visualise searching and path-finding algorithms
 
 ## Description
 
@@ -13,7 +13,8 @@ The program will attempt to find the shortest path from start (blue field) to go
 The program allows the user to place and erase walls (```ctrl + LMB```) and swamp (```alt + RMB```). The former prevents the program from searching in a walled area, the latter carries a penalty for swamp fields, which the algorithm adjusts the path-finding for.
 
 <p align="center">
-  <img src="PathVisAStar.gif" alt="showcase gif" />
+ <img src="instantPanel_with_AStar.gif" style="float: left; width: 40%; margin-right: 1%; margin-bottom: 0.5em;">
+ <img src="animationPanel_with_Dijkstra.gif" style="float: left; width: 40%; margin-right: 1%; margin-bottom: 0.5em;">
 </p>
 
 ### Executing program
@@ -23,6 +24,8 @@ The program allows the user to place and erase walls (```ctrl + LMB```) and swam
 ```
 java -jar PathVisualiserJava.jar
 ```
+
+or, alternatively, by executing PathVisualiser.jar
 
 ## Authors
 
