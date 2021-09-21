@@ -15,7 +15,8 @@ The program allows the user to place and erase walls (```ctrl + LMB```) and swam
 <p align="center">
   <img src="animationPanel_with_Dijkstra.gif" alt="showcase animation panel gif" />
   <img src="instantPanel_with_AStar.gif" alt="showcase instant panel gif" />
-
+ <img src="instantPanel_with_AStar.gif" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;">
+ <img src="animationPanel_with_Dijkstra.gif" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;">
 </p>
 
 ### Executing program
