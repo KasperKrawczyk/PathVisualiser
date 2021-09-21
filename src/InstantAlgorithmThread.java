@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.Collections;
-
 /**
  * Copyright © 2021 Kasper Krawczyk
  * <p>
@@ -19,6 +16,8 @@ import java.util.Collections;
  * Icons by Icons8 (https://icons8.com)
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class InstantAlgorithmThread extends AlgorithmThread {
 

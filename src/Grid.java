@@ -19,8 +19,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLOutput;
-import java.util.logging.Logger;
 
 public class Grid extends JPanel implements MouseListener {
 

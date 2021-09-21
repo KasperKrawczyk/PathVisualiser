@@ -18,11 +18,8 @@
  */
 
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-
 import javax.sound.sampled.*;
 import javax.swing.*;
 
@@ -145,6 +142,7 @@ public class AnimationPanel extends ModePanel {
      * Creates an AnimationFrame object
      */
     public static ModePanel initialise() {
-        return new AnimationPanel(new Grid(500, 500, 45, 45), "Animation Panel");
+        return new AnimationPanel(new Grid(500, 500, 45, 45),
+                "Animation Panel");
     }
 }
