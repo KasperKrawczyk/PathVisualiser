@@ -31,8 +31,8 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         add(tabbedPane);
-        addModePanel(InstantPanel.initialise());
         addModePanel(AnimationPanel.initialise());
+        addModePanel(InstantPanel.initialise());
         pack();
         //centres the JFrame object relative to the screen
         setLocationRelativeTo(null);
